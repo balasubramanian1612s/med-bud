@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
+import 'package:med_bud/pages/auth.dart';
 import 'package:med_bud/pages/medicine_scheduler.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: NotificationPage(),
+      home: AuthPage(),
     );
   }
 }
@@ -31,7 +32,6 @@ class MyStatefulWidget extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
