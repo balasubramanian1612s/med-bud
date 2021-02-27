@@ -13,6 +13,13 @@ class _CartState extends State<Cart> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Cart"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            cart.clear();
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: Builder(
         builder: (context) {
