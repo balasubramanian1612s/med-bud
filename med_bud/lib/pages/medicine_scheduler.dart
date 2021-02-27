@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:med_bud/pages/schedule_tablets_listing.dart';
 
 class MedicineScheduler extends StatefulWidget {
   @override
@@ -6,11 +7,18 @@ class MedicineScheduler extends StatefulWidget {
 }
 
 class _MedicineSchedulerState extends State<MedicineScheduler> {
+  List<MedicineRoutine> morningMedicines = [];
+  List<MedicineRoutine> nightMedicines = [];
+  List<MedicineRoutine> afternoonMedicines = [];
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Med Bud'),
+      ),
       body: Column(
         children: [
           Padding(
@@ -21,7 +29,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Container(
-                  height: 100,
+                  height: 100 + morningMedicines.length * 20.toDouble(),
                   width: width,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -32,11 +40,22 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Morning Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        for (var item in morningMedicines) Text(item.name),
                         RaisedButton.icon(
-                            onPressed: () {},
-                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              morningMedicines = await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          ScheduleTabletsListing()));
+                              setState(() {});
+                            },
+                            icon: morningMedicines.isEmpty
+                                ? Icon(Icons.add)
+                                : Icon(Icons.edit),
                             color: Colors.pink[50],
-                            label: Text('Add your morning tablets'))
+                            label: morningMedicines.isEmpty
+                                ? Text('Add your morning tablets')
+                                : Text("Edit your morning tablets"))
                       ],
                     ),
                   ),
@@ -50,7 +69,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Container(
-                  height: 100,
+                  height: 100 + afternoonMedicines.length * 20.toDouble(),
                   width: width,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -61,11 +80,22 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Afternoon Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        for (var item in afternoonMedicines) Text(item.name),
                         RaisedButton.icon(
-                            onPressed: () {},
-                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              afternoonMedicines = await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          ScheduleTabletsListing()));
+                              setState(() {});
+                            },
+                            icon: afternoonMedicines.isEmpty
+                                ? Icon(Icons.add)
+                                : Icon(Icons.edit),
                             color: Colors.pink[50],
-                            label: Text('Add your Afternoon tablets'))
+                            label: morningMedicines.isEmpty
+                                ? Text('Add your afternoon tablets')
+                                : Text("Edit your afternoon tablets"))
                       ],
                     ),
                   ),
@@ -79,7 +109,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Container(
-                  height: 100,
+                  height: 100 + nightMedicines.length * 20.toDouble(),
                   width: width,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -90,11 +120,22 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Night Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        for (var item in nightMedicines) Text(item.name),
                         RaisedButton.icon(
-                            onPressed: () {},
-                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              nightMedicines = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          ScheduleTabletsListing()));
+                              setState(() {});
+                            },
+                            icon: nightMedicines.isEmpty
+                                ? Icon(Icons.add)
+                                : Icon(Icons.edit),
                             color: Colors.pink[50],
-                            label: Text('Add your Night tablets'))
+                            label: nightMedicines.isEmpty
+                                ? Text('Add your night tablets')
+                                : Text("Edit your night tablets"))
                       ],
                     ),
                   ),

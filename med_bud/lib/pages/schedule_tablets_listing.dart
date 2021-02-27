@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:med_bud/pages/scheduler_medicine_list.dart';
 
 class MedicineRoutine {
   int medId;
@@ -8,8 +9,8 @@ class MedicineRoutine {
   int quantity;
   int when;
 
-  MedicineRoutine(
-    @required this.medId,  @required this.name, @required this.quantity, @required this.when);
+  MedicineRoutine(@required this.medId, @required this.name,
+      @required this.quantity, @required this.when);
 }
 
 class ScheduleTabletsListing extends StatefulWidget {
@@ -19,17 +20,32 @@ class ScheduleTabletsListing extends StatefulWidget {
 
 class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
   List<MedicineRoutine> mediNames = [];
-
+  List<Medicine> selectedMedicines = [];
   @override
   Widget build(BuildContext context) {
     var rng = new Random();
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+        appBar: AppBar(
+          title: const Text('Med Bud'),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.check),
+                onPressed: () {
+                  Navigator.of(context).pop(mediNames);
+                })
+          ],
+        ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
+            selectedMedicines = await Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => SchedulerMedicineList()));
             setState(() {
-              mediNames.add(new MedicineRoutine(rng.nextInt(10000) ,"Med", 1, 1));
+              selectedMedicines.forEach((element) {
+                mediNames.add(
+                    new MedicineRoutine(element.medId, element.name, 1, 0));
+              });
             });
           },
           child: Icon(Icons.add),
@@ -139,74 +155,8 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                                               ),
                                             ),
                                           ),
-                                          // IconButton(
-                                          //   color: Colors.red,
-                                          //   icon: Icon(Icons.close_rounded),
-                                          //   onPressed: () {
-                                          //     setState(() {
-                                          //       mediNames.removeAt(index);
-                                          //     });
-                                          //   },
-                                          // )
                                         ],
                                       ),
-                                      // Row(
-                                      //   crossAxisAlignment:
-                                      //       CrossAxisAlignment.center,
-                                      //   mainAxisAlignment:
-                                      //       MainAxisAlignment.spaceAround,
-                                      //   children: [
-                                      //     Expanded(child: Container()),
-                                      //     ClipOval(
-                                      //       child: Material(
-                                      //         color:
-                                      //             Colors.pink[50], // button color
-                                      //         child: InkWell(
-                                      //           splashColor:
-                                      //               Colors.red, // inkwell color
-                                      //           child: SizedBox(
-                                      //               width: 40,
-                                      //               height: 40,
-                                      //               child: Icon(Icons.remove)),
-                                      //           onTap: () {
-                                      //             setState(() {
-                                      //               mediNames[index].quantity -= 1;
-                                      //               if (mediNames[index].quantity ==
-                                      //                   0) {
-                                      //                 mediNames.removeAt(index);
-                                      //               }
-                                      //             });
-                                      //           },
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //     Padding(
-                                      //       padding: const EdgeInsets.only(
-                                      //           right: 20.0, left: 20),
-                                      //       child: Text(mediNames[index]
-                                      //           .quantity
-                                      //           .toString()),
-                                      //     ),
-                                      //     ClipOval(
-                                      //       child: Material(
-                                      //         color:
-                                      //             Colors.pink[50], // button color
-                                      //         child: InkWell(
-                                      //           child: SizedBox(
-                                      //               width: 40,
-                                      //               height: 40,
-                                      //               child: Icon(Icons.add)),
-                                      //           onTap: () {
-                                      //             setState(() {
-                                      //               mediNames[index].quantity += 1;
-                                      //             });
-                                      //           },
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //     Expanded(child: Container()),
-                                      //   ],
-                                      // )
                                     ],
                                   ),
                                 ),
