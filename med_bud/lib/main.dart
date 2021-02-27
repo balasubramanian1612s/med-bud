@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
+import 'package:med_bud/pages/scheduler_medicine_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,7 +37,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'Index 0: Home',
       style: optionStyle,
     ),
-    ScheduleTabletsListing(),
+    MedicineScheduler(),
     Text(
       'Index 2: School',
       style: optionStyle,
@@ -52,9 +53,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Med Bud'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Med Bud'),
+      // ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
