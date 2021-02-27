@@ -24,6 +24,7 @@ class _NotificationPageState extends State<NotificationPage> {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: notificationSelected);
+        _showNotification();
   }
 
   Future _showNotification() async {
@@ -36,8 +37,8 @@ class _NotificationPageState extends State<NotificationPage> {
     // await flutterLocalNotificationsPlugin.show(
     //     1, 'Task', 'You created', generalNotificationDetails,
     //     payload: "Payload");
-    DateTime scheduledTime = DateTime.now()
-        .add(Duration(seconds: 5)); // set the date and time of notification
+var time = DateTime.parse("2021-02-28T01:28:40.000Z");
+    DateTime scheduledTime = time; // set the date and time of notification
 
     await flutterLocalNotificationsPlugin.schedule(0, 'Scheduled',
         'Scheduled Dude !1', scheduledTime, generalNotificationDetails,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:med_bud/pages/medicine_scheduler.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,8 @@ class RemainderHome extends StatefulWidget {
 }
 
 class _RemainderHomeState extends State<RemainderHome> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   bool isLoading;
   List<MedicineRoutine> morningMedicines = [];
   List<MedicineRoutine> nightMedicines = [];
@@ -133,7 +136,39 @@ class _RemainderHomeState extends State<RemainderHome> {
   void initState() {
     isLoading = true;
     ddd();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    final IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings();
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: notificationSelected);
+        _showNotification();
     super.initState();
+  }
+
+  Future _showNotification() async {
+    var androidDetails = AndroidNotificationDetails(
+        'channelId', 'reminderChannel', 'Send Reminders',
+        importance: Importance.max, priority: Priority.max);
+    var iosDetails = IOSNotificationDetails();
+    var generalNotificationDetails =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+    // await flutterLocalNotificationsPlugin.show(
+    //     1, 'Task', 'You created', generalNotificationDetails,
+    //     payload: "Payload");
+    DateTime scheduledTime = DateTime.now()
+        .add(Duration(seconds: 10)); // set the date and time of notification
+
+    await flutterLocalNotificationsPlugin.schedule(0, 'Scheduled',
+        'Scheduled Dude !1', scheduledTime, generalNotificationDetails,
+        payload: 'Payload Info');
+    //payload-the info you wanna pass at time of creating notification that should be recieved at time of notification
   }
 
   @override
@@ -159,9 +194,9 @@ class _RemainderHomeState extends State<RemainderHome> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Container(
-                              height: 100 +
-                                  (((nightMedicines.length / 5).ceil()) * 30)
-                                      .toDouble(),
+                              // height: 100 +
+                              //     (((nightMedicines.length / 5).ceil()) * 30)
+                              //         .toDouble(),
                               width: width,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -217,9 +252,9 @@ class _RemainderHomeState extends State<RemainderHome> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Container(
-                              height: 100 +
-                                  (((nightMedicines.length / 5).ceil()) * 30)
-                                      .toDouble(),
+                              // height: 100 +
+                              //     (((nightMedicines.length / 5).ceil()) * 30)
+                              //         .toDouble(),
                               width: width,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -277,9 +312,9 @@ class _RemainderHomeState extends State<RemainderHome> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Container(
-                              height: 100 +
-                                  (((nightMedicines.length / 5).ceil()) * 30)
-                                      .toDouble(),
+                              // height: 100 +
+                              //     (((nightMedicines.length / 5).ceil()) * 30)
+                              //         .toDouble(),
                               width: width,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -396,6 +431,16 @@ class _RemainderHomeState extends State<RemainderHome> {
                 ),
               ],
             ),
+    );
+  }
+
+  Future notificationSelected(String payload) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Notif clicked'),
+        content: Text('Notification clicked $payload'),
+      ),
     );
   }
 }
