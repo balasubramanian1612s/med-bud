@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+
+import 'package:med_bud/cart.dart';
+
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MedicineRoutine {
   String medId;
@@ -63,6 +66,7 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+
         appBar: AppBar(
           title: const Text('Med Bud'),
           actions: [
@@ -126,6 +130,8 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                 });
               });
             }
+            });
+
           },
           child: Icon(Icons.add),
         ),
@@ -143,8 +149,8 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                   // Convert each item into a widget based on the type of item it is.
                   itemBuilder: (context, index) {
                     return Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                        padding: const EdgeInsets.only(
+                            bottom: 16, left: 16, right: 16),
                         child: Dismissible(
                           onDismissed: (direction) {
                             setState(() {
@@ -152,7 +158,12 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                             });
                           },
                           background: Container(
-                            color: Colors.red,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.red,
+                            ),
                             child: Center(
                                 child: Text(
                               'Remove Item',
