@@ -5,6 +5,7 @@ import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
 import 'package:med_bud/test/notificationPage.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
         providers: [],
         child: MaterialApp(
@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
           ),
           home: MedicineShopping(),
         ));
-
   }
 }
 
