@@ -40,7 +40,9 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Morning Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+
                         for (var item in morningMedicines) Text(item.name),
+
                         RaisedButton.icon(
                             onPressed: () async {
                               morningMedicines = await Navigator.of(context)
@@ -80,7 +82,9 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Afternoon Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+
                         for (var item in afternoonMedicines) Text(item.name),
+
                         RaisedButton.icon(
                             onPressed: () async {
                               afternoonMedicines = await Navigator.of(context)
@@ -120,7 +124,9 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Night Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+
                         for (var item in nightMedicines) Text(item.name),
+
                         RaisedButton.icon(
                             onPressed: () async {
                               nightMedicines = await Navigator.of(context).push(
