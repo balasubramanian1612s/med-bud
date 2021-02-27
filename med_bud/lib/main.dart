@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
+import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
+import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -11,14 +13,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [],
-        child: MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.pink,
-          ),
-          home: MedicineShopping(),
-        ));
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+      ),
+      home: MyStatefulWidget(),
+    );
   }
 }
 
@@ -35,10 +35,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
+    PillStockHome(),
     RemainderHome(),
     Text(
       'Index 2: School',
