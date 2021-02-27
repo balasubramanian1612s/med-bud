@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Medicine {
   String name;
-  int medId;
+  String medId;
   Medicine(@required this.medId, @required this.name);
 }
 
 class SchedulerMedicineList extends StatefulWidget {
+  int when;
+  SchedulerMedicineList(this.when);
   @override
   _SchedulerMedicineListState createState() => _SchedulerMedicineListState();
 }
@@ -17,20 +22,64 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
   TextEditingController controller = new TextEditingController();
   List<Medicine> allMedicines = [];
   List<Medicine> searchedMedicines = [];
-  List<int> selectedIds = [];
+  List<String> selectedIds = [];
   List<Medicine> selectedMedicinnes = [];
+  loadAllData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
+    String hasData = prefs.getString('RoutineDatabase');
+    print(hasData);
+    List<Medicine> tabletsIntheSheduler = [];
+    if (hasData != null) {
+      Map<String, dynamic> user = jsonDecode(hasData) as Map<String, dynamic>;
+      user.forEach((key, value) {
+        if (key == "Morning" && widget.when == 0) {
+          value.forEach((k, v) {
+            tabletsIntheSheduler.add(Medicine(k, v["name"]));
+          });
+        } else if (key == "Afternoon" && widget.when == 1) {
+          value.forEach((k, v) {
+            tabletsIntheSheduler.add(Medicine(k, v["name"]));
+          });
+        } else if (key == "Evening" && widget.when == 2) {
+          value.forEach((k, v) {
+            tabletsIntheSheduler.add(Medicine(k, v["name"]));
+          });
+        }
+      });
+      List<String> tempIds = [];
+      tabletsIntheSheduler.forEach((element) {
+        tempIds.add(element.medId);
+      });
+      print(tempIds);
+      List<Medicine> tempMedicines = [];
+      allMedicines.forEach((element) {
+        print(element.medId);
+        if (tempIds.contains(element.medId)) {
+          print("in if");
+        } else {
+          tempMedicines.add(element);
+        }
+      });
+      print(tempMedicines);
+      setState(() {
+        allMedicines = tempMedicines;
+      });
+    }
+  }
 
   @override
   void initState() {
-    allMedicines.add(Medicine(1, "med1"));
-    allMedicines.add(Medicine(2, "med2"));
-    allMedicines.add(Medicine(3, "med3"));
-    allMedicines.add(Medicine(4, "med4"));
-    allMedicines.add(Medicine(5, "med15"));
-    allMedicines.add(Medicine(6, "med16"));
-    allMedicines.add(Medicine(7, "med17"));
-    allMedicines.add(Medicine(8, "med18"));
-    allMedicines.add(Medicine(9, "med10"));
+    allMedicines.add(Medicine("id1", "med1"));
+    allMedicines.add(Medicine("id2", "med2"));
+    allMedicines.add(Medicine("id3", "med3"));
+    allMedicines.add(Medicine("id4", "med4"));
+    allMedicines.add(Medicine("id5", "med15"));
+    allMedicines.add(Medicine("id6", "med16"));
+    allMedicines.add(Medicine("id7", "med17"));
+    allMedicines.add(Medicine("id8", "med18"));
+    allMedicines.add(Medicine("id9", "med10"));
+    loadAllData();
     super.initState();
   }
 
@@ -76,7 +125,7 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
         ),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           allMedicines.forEach((element) {
             if (selectedIds.contains(element.medId)) {
               selectedMedicinnes.add(element);

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicineScheduler extends StatefulWidget {
   @override
@@ -10,6 +13,45 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
   List<MedicineRoutine> morningMedicines = [];
   List<MedicineRoutine> nightMedicines = [];
   List<MedicineRoutine> afternoonMedicines = [];
+
+  loadAllData() async {
+    morningMedicines = [];
+    nightMedicines = [];
+    afternoonMedicines = [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
+    String hasData = prefs.getString('RoutineDatabase');
+    print(hasData);
+    if (hasData != null) {
+      Map<String, dynamic> user = jsonDecode(hasData) as Map<String, dynamic>;
+      user.forEach((key, value) {
+        if (key == "Morning") {
+          value.forEach((k, v) {
+            morningMedicines.add(MedicineRoutine(k, v["name"], v["qty"], 0));
+          });
+        } else if (key == "Afternoon") {
+          value.forEach((k, v) {
+            afternoonMedicines.add(MedicineRoutine(k, v["name"], v["qty"], 1));
+          });
+        } else if (key == "Evening") {
+          value.forEach((k, v) {
+            nightMedicines.add(MedicineRoutine(k, v["name"], v["qty"], 2));
+          });
+        }
+      });
+      setState(() {});
+    }
+    await prefs.setInt('counter', 1);
+    int counter = (prefs.getInt('counter') ?? 0) + 1;
+    print('Pressed $counter times.');
+  }
+
+  @override
+  void initState() {
+    loadAllData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -45,11 +87,13 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
 
                         RaisedButton.icon(
                             onPressed: () async {
-                              morningMedicines = await Navigator.of(context)
-                                  .push(MaterialPageRoute(
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
                                       builder: (ctx) =>
-                                          ScheduleTabletsListing()));
-                              setState(() {});
+                                          ScheduleTabletsListing(0)));
+                              setState(() {
+                                loadAllData();
+                              });
                             },
                             icon: morningMedicines.isEmpty
                                 ? Icon(Icons.add)
@@ -87,11 +131,13 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
 
                         RaisedButton.icon(
                             onPressed: () async {
-                              afternoonMedicines = await Navigator.of(context)
-                                  .push(MaterialPageRoute(
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
                                       builder: (ctx) =>
-                                          ScheduleTabletsListing()));
-                              setState(() {});
+                                          ScheduleTabletsListing(1)));
+                              setState(() {
+                                loadAllData();
+                              });
                             },
                             icon: afternoonMedicines.isEmpty
                                 ? Icon(Icons.add)
@@ -129,11 +175,13 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
 
                         RaisedButton.icon(
                             onPressed: () async {
-                              nightMedicines = await Navigator.of(context).push(
+                              await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (ctx) =>
-                                          ScheduleTabletsListing()));
-                              setState(() {});
+                                          ScheduleTabletsListing(2)));
+                              setState(() {
+                                loadAllData();
+                              });
                             },
                             icon: nightMedicines.isEmpty
                                 ? Icon(Icons.add)
