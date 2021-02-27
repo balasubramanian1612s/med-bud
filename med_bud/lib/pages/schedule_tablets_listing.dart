@@ -7,7 +7,6 @@ import 'package:med_bud/cart.dart';
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class MedicineRoutine {
   String medId;
   String name;
@@ -66,7 +65,6 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-
         appBar: AppBar(
           title: const Text('Med Bud'),
           actions: [
@@ -117,24 +115,22 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                 })
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            selectedMedicines = await Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (ctx) => SchedulerMedicineList(widget.when)));
-            if (selectedMedicines != null) {
-              setState(() {
-                selectedMedicines.forEach((element) {
-                  mediNames.add(
-                      new MedicineRoutine(element.medId, element.name, 1, 0));
-                });
+        floatingActionButton: FloatingActionButton(onPressed: () async {
+          selectedMedicines = await Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (ctx) => SchedulerMedicineList(widget.when)));
+          if (selectedMedicines != null) {
+            setState(() {
+              selectedMedicines.forEach((element) {
+                mediNames.add(
+                    new MedicineRoutine(element.medId, element.name, 1, 0));
               });
-            }
             });
+          }
+        }),
 
-          },
-          child: Icon(Icons.add),
-        ),
+        // child: Icon(Icons.add),
+        // ),
         body: mediNames.isEmpty
             ? Center(
                 child: Text('Click + and add your Morning routine tablets'),
