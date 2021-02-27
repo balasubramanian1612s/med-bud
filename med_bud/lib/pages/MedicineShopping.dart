@@ -5,6 +5,8 @@ import 'package:med_bud/cart.dart';
 // ignore: deprecated_member_use
 List<MedicinesInCart> cart = List<MedicinesInCart>();
 double total = 0;
+// ignore: deprecated_member_use
+List<MedicinesRemaining> medRem = List<MedicinesRemaining>();
 
 class MedicineShopping extends StatefulWidget {
   @override
@@ -198,6 +200,9 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                       onPressed: () {
                                         setState(() {
                                           medicines[index].quantity += 1;
+                                          medicines.sort((a, b) =>
+                                              b.quantity.compareTo(a.quantity));
+                                          print(medicines);
                                         });
                                       },
                                       shape: RoundedRectangleBorder(
@@ -219,6 +224,10 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                             onPressed: () {
                                               setState(() {
                                                 medicines[index].quantity -= 1;
+                                                medicines.sort((a, b) => b
+                                                    .quantity
+                                                    .compareTo(a.quantity));
+                                                print(medicines);
                                               });
                                             },
                                             icon: Icon(Icons.remove),
@@ -250,6 +259,10 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                             onPressed: () {
                                               setState(() {
                                                 medicines[index].quantity += 1;
+                                                medicines.sort((a, b) => b
+                                                    .quantity
+                                                    .compareTo(a.quantity));
+                                                print(medicines);
                                               });
                                             },
                                             icon: Icon(Icons.add),
@@ -311,6 +324,18 @@ class MedicinesInCart {
   String medName;
   double price;
   MedicinesInCart(
+      {@required this.medId,
+      @required this.medName,
+      @required this.quantity,
+      @required this.price});
+}
+
+class MedicinesRemaining {
+  int medId;
+  int quantity;
+  String medName;
+  double price;
+  MedicinesRemaining(
       {@required this.medId,
       @required this.medName,
       @required this.quantity,
