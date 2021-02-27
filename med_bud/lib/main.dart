@@ -4,6 +4,7 @@ import 'package:med_bud/pages/medicine_scheduler.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
+import 'package:med_bud/test/notificationPage.dart';
 
 void main() {
   runApp(MyApp());
