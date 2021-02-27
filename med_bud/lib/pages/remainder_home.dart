@@ -5,18 +5,24 @@ import 'package:med_bud/pages/medicine_scheduler.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'medication_history.dart';
+
 class RemainderHome extends StatefulWidget {
   @override
   _RemainderHomeState createState() => _RemainderHomeState();
 }
 
 class _RemainderHomeState extends State<RemainderHome> {
+  bool isLoading;
   List<MedicineRoutine> morningMedicines = [];
   List<MedicineRoutine> nightMedicines = [];
   List<MedicineRoutine> afternoonMedicines = [];
   String morningText = "";
   String afternoonText = "";
   String eveningText = "";
+  bool tMorn = false;
+  bool tAfter = false;
+  bool tEve = false;
   var now = new DateTime.now();
   var hour = DateTime.now().hour;
   loadAllData() async {
@@ -65,13 +71,68 @@ class _RemainderHomeState extends State<RemainderHome> {
           eveningText += ", ${item.quantity} X ${item.name}";
         }
       }
-      setState(() {});
     }
+  }
+
+  String medicationDataOff;
+  Map<String, dynamic> medicationData;
+  String todayString = "c" +
+      DateTime.now().day.toString() +
+      "/" +
+      DateTime.now().month.toString() +
+      "/" +
+      DateTime.now().year.toString();
+
+  updateMedictioonHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    medicationDataOff = prefs.getString('MedicationHistory');
+    if (medicationDataOff != null) {
+      medicationData = jsonDecode(medicationDataOff) as Map<String, dynamic>;
+      print("In if");
+      medicationData.putIfAbsent(
+          todayString,
+          () => {
+                "Morning": "no",
+                "Afternoon": "no",
+                "Evening": "no",
+              });
+      setState(() {
+        tMorn = medicationData[todayString]['Morning'] == "yes";
+        tAfter = medicationData[todayString]['Afternoon'] == "yes";
+        tEve = medicationData[todayString]['Evening'] == "yes";
+      });
+      prefs.setString("MedicationHistory", jsonEncode(medicationData));
+    } else {
+      medicationData = {
+        todayString: {
+          "Morning": "no",
+          "Afternoon": "no",
+          "Evening": "no",
+        }
+      };
+      setState(() {
+        tMorn = medicationData[todayString]['Morning'] == "yes";
+        tAfter = medicationData[todayString]['Afternoon'] == "yes";
+        tEve = medicationData[todayString]['Evening'] == "yes";
+      });
+      prefs.setString("MedicationHistory", jsonEncode(medicationData));
+    }
+    print(medicationData.toString());
+  }
+
+  void ddd() async {
+    await loadAllData();
+    await updateMedictioonHistory();
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   void initState() {
-    loadAllData();
+    isLoading = true;
+    ddd();
     super.initState();
   }
 
@@ -84,218 +145,257 @@ class _RemainderHomeState extends State<RemainderHome> {
       appBar: AppBar(
         title: const Text('Med Bud'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Container(
-                  height: 100 +
-                      (((nightMedicines.length / 5).ceil()) * 30).toDouble(),
-                  width: width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Took you Morning medication?',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Center(
-                            child: Text(
-                          morningText,
-                          textAlign: TextAlign.center,
-                        )),
-                        RaisedButton.icon(
-                            onPressed: hour >= 6
-                                ? () async {
-                                    await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (ctx) =>
-                                                ScheduleTabletsListing(0)));
-                                    setState(() {
-                                      loadAllData();
-                                    });
-                                  }
-                                : null,
-                            icon: Icon(Icons.check),
-                            color:
-                                hour > 6 ? Colors.pink[50] : Colors.grey[200],
-                            label: Text("I took My medication"))
-                      ],
-                    ),
-                  ),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-            child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Container(
-                  height: 100 +
-                      (((nightMedicines.length / 5).ceil()) * 30).toDouble(),
-                  width: width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Took you Afternoon medication?',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Center(
-                            child: Text(
-                          afternoonText,
-                          textAlign: TextAlign.center,
-                        )),
-                        RaisedButton.icon(
-                            onPressed: hour >= 2
-                                ? () async {
-                                    await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (ctx) =>
-                                                ScheduleTabletsListing(1)));
-                                    setState(() {
-                                      loadAllData();
-                                    });
-                                  }
-                                : null,
-                            icon: Icon(Icons.check),
-                            color:
-                                hour >= 2 ? Colors.pink[50] : Colors.grey[200],
-                            label: Text("I took My medication"))
-                      ],
-                    ),
-                  ),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-            child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Container(
-                  height: 100 +
-                      (((nightMedicines.length / 5).ceil()) * 30).toDouble(),
-                  width: width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Took you Night medication?',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Center(
-                            child: Text(
-                          eveningText,
-                          textAlign: TextAlign.center,
-                        )),
-                        RaisedButton.icon(
-                            onPressed: hour >= 19
-                                ? () async {
-                                    await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (ctx) =>
-                                                ScheduleTabletsListing(2)));
-                                    setState(() {
-                                      loadAllData();
-                                    });
-                                  }
-                                : null,
-                            icon: Icon(Icons.check),
-                            color:
-                                hour >= 19 ? Colors.pink[50] : Colors.grey[200],
-                            label: Text("I took My medication"))
-                      ],
-                    ),
-                  ),
-                )),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (ctx) => MedicineScheduler()));
-                },
-                child: Card(
-                  elevation: 5,
-                  color: Colors.pink[50],
-                  child: Container(
-                    width: width * 0.45,
-                    height: height * 0.12,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.history,
-                            size: 40,
-                            color: Colors.pink,
+      body: isLoading
+          ? CircularProgressIndicator()
+          : Column(
+              children: [
+                tMorn == true
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Container(
+                              height: 100 +
+                                  (((nightMedicines.length / 5).ceil()) * 30)
+                                      .toDouble(),
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      'Took you Morning medication?',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Center(
+                                        child: Text(
+                                      morningText,
+                                      textAlign: TextAlign.center,
+                                    )),
+                                    RaisedButton.icon(
+                                        onPressed: hour >= 6
+                                            ? () async {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                // await prefs.clear();
+                                                String hasData =
+                                                    prefs.getString(
+                                                        'MedicationHistory');
+                                                medicationData[todayString]
+                                                    .update('Morning',
+                                                        (value) => 'yes');
+                                                prefs.setString(
+                                                    "MedicationHistory",
+                                                    jsonEncode(medicationData));
+                                                print(medicationData);
+                                                updateMedictioonHistory();
+                                              }
+                                            : null,
+                                        icon: Icon(Icons.check),
+                                        color: Colors.pink[50],
+                                        label: Text("I took My medication"))
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                tAfter == true
+                    ? Container()
+                    : Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                        child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Container(
+                              height: 100 +
+                                  (((nightMedicines.length / 5).ceil()) * 30)
+                                      .toDouble(),
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      'Took you Afternoon medication?',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Center(
+                                        child: Text(
+                                      afternoonText,
+                                      textAlign: TextAlign.center,
+                                    )),
+                                    RaisedButton.icon(
+                                        onPressed: hour >= 2
+                                            ? () async {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                // await prefs.clear();
+
+                                                String hasData =
+                                                    prefs.getString(
+                                                        'MedicationHistory');
+                                                medicationData[todayString]
+                                                    .update('Afternoon',
+                                                        (value) => 'yes');
+                                                prefs.setString(
+                                                    "MedicationHistory",
+                                                    jsonEncode(medicationData));
+                                                print(medicationData);
+                                                updateMedictioonHistory();
+                                              }
+                                            : null,
+                                        icon: Icon(Icons.check),
+                                        color: Colors.pink[50],
+                                        label: Text("I took My medication"))
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                tEve == true
+                    ? Container()
+                    : Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                        child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Container(
+                              height: 100 +
+                                  (((nightMedicines.length / 5).ceil()) * 30)
+                                      .toDouble(),
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Took you Night medication?',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Center(
+                                        child: Text(
+                                      eveningText,
+                                      textAlign: TextAlign.center,
+                                    )),
+                                    RaisedButton.icon(
+                                        onPressed: hour >= 19
+                                            ? () async {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                // await prefs.clear();
+                                                String hasData =
+                                                    prefs.getString(
+                                                        'MedicationHistory');
+                                                medicationData[todayString]
+                                                    .update('Evening',
+                                                        (value) => 'yes');
+                                                prefs.setString(
+                                                    "MedicationHistory",
+                                                    jsonEncode(medicationData));
+                                                print(medicationData);
+                                                updateMedictioonHistory();
+                                              }
+                                            : null,
+                                        icon: Icon(Icons.check),
+                                        color: Colors.pink[50],
+                                        label: Text("I took My medication"))
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => MedicationHistory()));
+                      },
+                      child: Card(
+                        elevation: 5,
+                        color: Colors.pink[50],
+                        child: Container(
+                          width: width * 0.45,
+                          height: height * 0.12,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.history,
+                                  size: 40,
+                                  color: Colors.pink,
+                                ),
+                                Center(
+                                    child: Text(
+                                  'Check your Medication history',
+                                  textAlign: TextAlign.center,
+                                ))
+                              ],
+                            ),
                           ),
-                          Center(
-                              child: Text(
-                            'Check your Medication history',
-                            textAlign: TextAlign.center,
-                          ))
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => MedicineScheduler()));
-                },
-                child: Card(
-                  color: Colors.pink[50],
-                  elevation: 5,
-                  child: Container(
-                    width: width * 0.45,
-                    height: height * 0.12,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.medical_services_outlined,
-                            color: Colors.pink,
-                            size: 40,
+                    GestureDetector(
+                      onTap: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => MedicineScheduler()));
+                        setState(() {});
+                      },
+                      child: Card(
+                        color: Colors.pink[50],
+                        elevation: 5,
+                        child: Container(
+                          width: width * 0.45,
+                          height: height * 0.12,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.medical_services_outlined,
+                                  color: Colors.pink,
+                                  size: 40,
+                                ),
+                                Center(
+                                    child: Text(
+                                  'Change your daily medication',
+                                  textAlign: TextAlign.center,
+                                ))
+                              ],
+                            ),
                           ),
-                          Center(
-                              child: Text(
-                            'Change your daily medication',
-                            textAlign: TextAlign.center,
-                          ))
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
     );
   }
 }
