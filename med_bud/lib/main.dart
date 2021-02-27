@@ -12,12 +12,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: MedicineShopping(),
-    );
+    return MultiProvider(
+        providers: [],
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.pink,
+          ),
+          home: MedicineShopping(),
+        ));
   }
 }
 
@@ -30,7 +32,6 @@ class MyStatefulWidget extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
