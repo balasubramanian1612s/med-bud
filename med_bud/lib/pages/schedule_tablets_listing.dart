@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicineRoutine {
-  int medId;
+  String medId;
   String name;
   int quantity;
   int when;
@@ -14,6 +16,8 @@ class MedicineRoutine {
 }
 
 class ScheduleTabletsListing extends StatefulWidget {
+  int when;
+  ScheduleTabletsListing(this.when);
   @override
   _ScheduleTabletsListingState createState() => _ScheduleTabletsListingState();
 }
@@ -21,6 +25,38 @@ class ScheduleTabletsListing extends StatefulWidget {
 class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
   List<MedicineRoutine> mediNames = [];
   List<Medicine> selectedMedicines = [];
+  loadAllData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
+    String hasData = prefs.getString('RoutineDatabase');
+    print(hasData);
+    if (hasData != null) {
+      Map<String, dynamic> user = jsonDecode(hasData) as Map<String, dynamic>;
+      user.forEach((key, value) {
+        if (key == "Morning" && widget.when == 0) {
+          value.forEach((k, v) {
+            mediNames.add(MedicineRoutine(k, v["name"], v["qty"], 0));
+          });
+        } else if (key == "Afternoon" && widget.when == 1) {
+          value.forEach((k, v) {
+            mediNames.add(MedicineRoutine(k, v["name"], v["qty"], 1));
+          });
+        } else if (key == "Evening" && widget.when == 2) {
+          value.forEach((k, v) {
+            mediNames.add(MedicineRoutine(k, v["name"], v["qty"], 2));
+          });
+        }
+      });
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    loadAllData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var rng = new Random();
@@ -32,21 +68,64 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
           actions: [
             IconButton(
                 icon: Icon(Icons.check),
-                onPressed: () {
-                  Navigator.of(context).pop(mediNames);
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  String MorAorN = widget.when == 0
+                      ? 'Morning'
+                      : widget.when == 1
+                          ? 'Afternoon'
+                          : 'Evening';
+                  var map1 = Map.fromIterable(mediNames,
+                      key: (e) => e.medId,
+                      value: (e) => {'name': e.name, 'qty': e.quantity});
+                  print(map1.toString());
+
+                  String hasData = prefs.getString('RoutineDatabase');
+                  if (hasData == null) {
+                    print(" i am in if");
+                    String m1, m2;
+                    if (MorAorN == "Morning") {
+                      m1 = "Afternoon";
+                      m2 = "Evening";
+                    } else if (MorAorN == "Afternoon") {
+                      m1 = "Morning";
+                      m2 = "Evening";
+                    } else if (MorAorN == "Evening") {
+                      m1 = "Morning";
+                      m2 = "Afternoon";
+                    }
+                    var mainMap = {MorAorN: map1, m1: {}, m2: {}};
+                    prefs.setString("RoutineDatabase", jsonEncode(mainMap));
+                  } else {
+                    print(" i am in else");
+
+                    Map<String, dynamic> dataFromDatabse =
+                        jsonDecode(hasData) as Map<String, dynamic>;
+                    dataFromDatabse.update(MorAorN, (value) => map1);
+
+                    prefs.setString(
+                        "RoutineDatabase", jsonEncode(dataFromDatabse));
+                  }
+                  String loadedData = prefs.getString('RoutineDatabase');
+                  print(loadedData);
+                  Navigator.of(context).pop();
                 })
           ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             selectedMedicines = await Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => SchedulerMedicineList()));
-            setState(() {
-              selectedMedicines.forEach((element) {
-                mediNames.add(
-                    new MedicineRoutine(element.medId, element.name, 1, 0));
+                MaterialPageRoute(
+                    builder: (ctx) => SchedulerMedicineList(widget.when)));
+            if (selectedMedicines != null) {
+              setState(() {
+                selectedMedicines.forEach((element) {
+                  mediNames.add(
+                      new MedicineRoutine(element.medId, element.name, 1, 0));
+                });
               });
-            });
+            }
           },
           child: Icon(Icons.add),
         ),
