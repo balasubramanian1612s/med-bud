@@ -200,9 +200,9 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                       onPressed: () {
                                         setState(() {
                                           medicines[index].quantity += 1;
-                                          medicines.sort((a, b) =>
-                                              b.quantity.compareTo(a.quantity));
-                                          print(medicines);
+                                          // medicines.sort((a, b) =>
+                                          //     b.quantity.compareTo(a.quantity));
+                                          // print(medicines);
                                         });
                                       },
                                       shape: RoundedRectangleBorder(
@@ -218,20 +218,20 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                           CrossAxisAlignment.end,
                                       children: <Widget>[
                                         CircleAvatar(
-                                          backgroundColor: Colors.pink[50],
+                                          backgroundColor: Colors.pink[500],
                                           radius: 17,
                                           child: IconButton(
                                             onPressed: () {
                                               setState(() {
                                                 medicines[index].quantity -= 1;
-                                                medicines.sort((a, b) => b
-                                                    .quantity
-                                                    .compareTo(a.quantity));
-                                                print(medicines);
+                                                // medicines.sort((a, b) => b
+                                                //     .quantity
+                                                //     .compareTo(a.quantity));
+                                                // print(medicines);
                                               });
                                             },
                                             icon: Icon(Icons.remove),
-                                            color: Colors.grey.shade700,
+                                            color: Colors.white,
                                             iconSize: 17,
                                           ),
                                         ),
@@ -253,20 +253,20 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                                           ),
                                         ),
                                         CircleAvatar(
-                                          backgroundColor: Colors.pink[50],
+                                          backgroundColor: Colors.pink[500],
                                           radius: 17,
                                           child: IconButton(
                                             onPressed: () {
                                               setState(() {
                                                 medicines[index].quantity += 1;
-                                                medicines.sort((a, b) => b
-                                                    .quantity
-                                                    .compareTo(a.quantity));
-                                                print(medicines);
+                                                // medicines.sort((a, b) => b
+                                                //     .quantity
+                                                //     .compareTo(a.quantity));
+                                                // print(medicines);
                                               });
                                             },
                                             icon: Icon(Icons.add),
-                                            color: Colors.grey.shade700,
+                                            color: Colors.white,
                                             iconSize: 17,
                                           ),
                                         ),
