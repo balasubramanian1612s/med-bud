@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
-import 'package:med_bud/pages/auth.dart';
-import 'package:med_bud/pages/medicine_scheduler.dart';
-import 'package:med_bud/pages/schedule_tablets_listing.dart';
-import 'package:med_bud/pages/scheduler_medicine_list.dart';
-import 'package:med_bud/test/notificationPage.dart';
+import 'package:med_bud/pages/remainder_home.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,12 +11,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: AuthPage(),
-    );
+    return MultiProvider(
+        providers: [],
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.pink,
+          ),
+          home: MedicineShopping(),
+        ));
   }
 }
 
@@ -40,7 +39,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'Index 0: Home',
       style: optionStyle,
     ),
-    MedicineScheduler(),
+    RemainderHome(),
     Text(
       'Index 2: School',
       style: optionStyle,
