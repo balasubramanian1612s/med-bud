@@ -32,6 +32,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Morning Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        // ignore: deprecated_member_use
                         RaisedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.add),
@@ -61,6 +62,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Afternoon Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        // ignore: deprecated_member_use
                         RaisedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.add),
@@ -90,6 +92,7 @@ class _MedicineSchedulerState extends State<MedicineScheduler> {
                           'Night Routine',
                           style: TextStyle(fontSize: 20),
                         ),
+                        // ignore: deprecated_member_use
                         RaisedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.add),

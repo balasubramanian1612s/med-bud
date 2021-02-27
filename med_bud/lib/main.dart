@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_bud/pages/medicine_scheduler.dart';
+import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: MyStatefulWidget(),
+      home: MedicineShopping(),
     );
   }
 }
@@ -80,4 +80,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
-
