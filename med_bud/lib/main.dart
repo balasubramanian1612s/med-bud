@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/remainder_home.dart';
+import 'package:med_bud/pages/schedule_tablets_listing.dart';
+import 'package:med_bud/pages/scheduler_medicine_list.dart';
+import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
