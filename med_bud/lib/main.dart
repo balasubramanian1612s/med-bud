@@ -57,10 +57,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static List<Widget> _widgetOptions = <Widget>[
     PillStockHome(),
     RemainderHome(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    MedicineShopping()
   ];
 
   void _onItemTapped(int index) {
