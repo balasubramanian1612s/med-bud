@@ -29,6 +29,9 @@ class _RemainderHomeState extends State<RemainderHome> {
   var now = new DateTime.now();
   var hour = DateTime.now().hour;
   loadAllData() async {
+    morningText = "";
+    afternoonText = "";
+    eveningText = "";
     morningMedicines = [];
     nightMedicines = [];
     afternoonMedicines = [];
@@ -92,6 +95,11 @@ class _RemainderHomeState extends State<RemainderHome> {
     if (medicationDataOff != null) {
       medicationData = jsonDecode(medicationDataOff) as Map<String, dynamic>;
       print("In if");
+      medicationData[todayString] = {
+        "Morning": "no",
+        "Afternoon": "no",
+        "Evening": "no",
+      };
       medicationData.putIfAbsent(
           todayString,
           () => {
@@ -148,7 +156,7 @@ class _RemainderHomeState extends State<RemainderHome> {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: notificationSelected);
-        _showNotification();
+    _showNotification();
     super.initState();
   }
 
@@ -184,182 +192,284 @@ class _RemainderHomeState extends State<RemainderHome> {
           ? CircularProgressIndicator()
           : Column(
               children: [
+                morningText == "" && afternoonText == "" && eveningText == ""
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            "You don't have any medications added, Please all your medicines by clicking Change your daily medication",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Container(),
                 tMorn == true
                     ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Container(
-                              // height: 100 +
-                              //     (((nightMedicines.length / 5).ceil()) * 30)
-                              //         .toDouble(),
-                              width: width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      'Took you Morning medication?',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Center(
-                                        child: Text(
-                                      morningText,
-                                      textAlign: TextAlign.center,
-                                    )),
-                                    RaisedButton.icon(
-                                        onPressed: hour >= 6
-                                            ? () async {
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                // await prefs.clear();
-                                                String hasData =
-                                                    prefs.getString(
-                                                        'MedicationHistory');
-                                                medicationData[todayString]
-                                                    .update('Morning',
-                                                        (value) => 'yes');
-                                                prefs.setString(
-                                                    "MedicationHistory",
-                                                    jsonEncode(medicationData));
-                                                print(medicationData);
-                                                updateMedictioonHistory();
-                                              }
-                                            : null,
-                                        icon: Icon(Icons.check),
-                                        color: Colors.pink[50],
-                                        label: Text("I took My medication"))
-                                  ],
+                    : morningText == ""
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                              ),
-                            )),
-                      ),
+                                child: Container(
+                                  // height: 100 +
+                                  //     (((nightMedicines.length / 5).ceil()) * 30)
+                                  //         .toDouble(),
+                                  width: width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          'Took you Morning medication?',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        Center(
+                                            child: Text(
+                                          morningText,
+                                          textAlign: TextAlign.center,
+                                        )),
+                                        RaisedButton.icon(
+                                            onPressed: hour >= 6
+                                                ? () async {
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    // await prefs.clear();
+                                                    String hasData =
+                                                        prefs.getString(
+                                                            'MedicationHistory');
+                                                    medicationData[todayString]
+                                                        .update('Morning',
+                                                            (value) => 'yes');
+                                                    prefs.setString(
+                                                        "MedicationHistory",
+                                                        jsonEncode(
+                                                            medicationData));
+                                                    try {
+                                                      String pillsDatas =
+                                                          prefs.getString(
+                                                              'PillStockDatabase');
+                                                      Map<String, dynamic>
+                                                          pillsStockNewData =
+                                                          jsonDecode(
+                                                              pillsDatas);
+                                                      Map<String, dynamic>
+                                                          pillsInDatabase =
+                                                          pillsStockNewData;
+                                                      morningMedicines
+                                                          .forEach((element) {
+                                                        // pillsInDatabase.
+                                                        pillsInDatabase[element]
+                                                            ['Qty'] = int.parse(
+                                                                pillsInDatabase[
+                                                                        element]
+                                                                    ['Qty']) -
+                                                            element.quantity;
+                                                      });
+                                                      prefs.setString(
+                                                          'PillStockDatabase',
+                                                          jsonEncode(
+                                                              pillsInDatabase));
+                                                    } catch (e) {}
+                                                    print(medicationData);
+                                                    updateMedictioonHistory();
+                                                  }
+                                                : null,
+                                            icon: Icon(Icons.check),
+                                            color: Colors.pink[50],
+                                            label: Text("I took My medication"))
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                          ),
                 tAfter == true
                     ? Container()
-                    : Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-                        child: Card(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Container(
-                              // height: 100 +
-                              //     (((nightMedicines.length / 5).ceil()) * 30)
-                              //         .toDouble(),
-                              width: width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      'Took you Afternoon medication?',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Center(
-                                        child: Text(
-                                      afternoonText,
-                                      textAlign: TextAlign.center,
-                                    )),
-                                    RaisedButton.icon(
-                                        onPressed: hour >= 2
-                                            ? () async {
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                // await prefs.clear();
-
-                                                String hasData =
-                                                    prefs.getString(
-                                                        'MedicationHistory');
-                                                medicationData[todayString]
-                                                    .update('Afternoon',
-                                                        (value) => 'yes');
-                                                prefs.setString(
-                                                    "MedicationHistory",
-                                                    jsonEncode(medicationData));
-                                                print(medicationData);
-                                                updateMedictioonHistory();
-                                              }
-                                            : null,
-                                        icon: Icon(Icons.check),
-                                        color: Colors.pink[50],
-                                        label: Text("I took My medication"))
-                                  ],
+                    : afternoonText == ""
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 8, left: 8, right: 8),
+                            child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                              ),
-                            )),
-                      ),
+                                child: Container(
+                                  // height: 100 +
+                                  //     (((nightMedicines.length / 5).ceil()) * 30)
+                                  //         .toDouble(),
+                                  width: width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          'Took you Afternoon medication?',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        Center(
+                                            child: Text(
+                                          afternoonText,
+                                          textAlign: TextAlign.center,
+                                        )),
+                                        RaisedButton.icon(
+                                            onPressed: hour >= 2
+                                                ? () async {
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    // await prefs.clear();
+
+                                                    String hasData =
+                                                        prefs.getString(
+                                                            'MedicationHistory');
+                                                    medicationData[todayString]
+                                                        .update('Afternoon',
+                                                            (value) => 'yes');
+                                                    prefs.setString(
+                                                        "MedicationHistory",
+                                                        jsonEncode(
+                                                            medicationData));
+                                                    print(medicationData);
+                                                    try {
+                                                      String pillsDatas =
+                                                          prefs.getString(
+                                                              'PillStockDatabase');
+                                                      Map<String, dynamic>
+                                                          pillsStockNewData =
+                                                          jsonDecode(
+                                                              pillsDatas);
+                                                      Map<String, dynamic>
+                                                          pillsInDatabase =
+                                                          pillsStockNewData;
+                                                      afternoonMedicines
+                                                          .forEach((element) {
+                                                        // pillsInDatabase.
+                                                        pillsInDatabase[element]
+                                                            ['Qty'] = int.parse(
+                                                                pillsInDatabase[
+                                                                        element]
+                                                                    ['Qty']) -
+                                                            element.quantity;
+                                                      });
+                                                      print(pillsInDatabase);
+                                                      prefs.setString(
+                                                          'PillStockDatabase',
+                                                          jsonEncode(
+                                                              pillsInDatabase));
+                                                    } catch (e) {}
+                                                    updateMedictioonHistory();
+                                                  }
+                                                : null,
+                                            icon: Icon(Icons.check),
+                                            color: Colors.pink[50],
+                                            label: Text("I took My medication"))
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                          ),
                 tEve == true
                     ? Container()
-                    : Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-                        child: Card(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Container(
-                              // height: 100 +
-                              //     (((nightMedicines.length / 5).ceil()) * 30)
-                              //         .toDouble(),
-                              width: width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Took you Night medication?',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Center(
-                                        child: Text(
-                                      eveningText,
-                                      textAlign: TextAlign.center,
-                                    )),
-                                    RaisedButton.icon(
-                                        onPressed: hour >= 19
-                                            ? () async {
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                // await prefs.clear();
-                                                String hasData =
-                                                    prefs.getString(
-                                                        'MedicationHistory');
-                                                medicationData[todayString]
-                                                    .update('Evening',
-                                                        (value) => 'yes');
-                                                prefs.setString(
-                                                    "MedicationHistory",
-                                                    jsonEncode(medicationData));
-                                                print(medicationData);
-                                                updateMedictioonHistory();
-                                              }
-                                            : null,
-                                        icon: Icon(Icons.check),
-                                        color: Colors.pink[50],
-                                        label: Text("I took My medication"))
-                                  ],
+                    : eveningText == ""
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 8, left: 8, right: 8),
+                            child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                              ),
-                            )),
-                      ),
+                                child: Container(
+                                  // height: 100 +
+                                  //     (((nightMedicines.length / 5).ceil()) * 30)
+                                  //         .toDouble(),
+                                  width: width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Took you Night medication?',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        Center(
+                                            child: Text(
+                                          eveningText,
+                                          textAlign: TextAlign.center,
+                                        )),
+                                        RaisedButton.icon(
+                                            onPressed: hour >= 1
+                                                ? () async {
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    // await prefs.clear();
+                                                    String hasData =
+                                                        prefs.getString(
+                                                            'MedicationHistory');
+                                                    medicationData[todayString]
+                                                        .update('Evening',
+                                                            (value) => 'yes');
+                                                    prefs.setString(
+                                                        "MedicationHistory",
+                                                        jsonEncode(
+                                                            medicationData));
+                                                    print(medicationData);
+                                                    try {
+                                                      String pillsDatas =
+                                                          prefs.getString(
+                                                              'PillStockDatabase');
+                                                      Map<String, dynamic>
+                                                          pillsStockNewData =
+                                                          jsonDecode(
+                                                              pillsDatas);
+                                                      Map<String, dynamic>
+                                                          pillsInDatabase =
+                                                          pillsStockNewData;
+                                                      nightMedicines
+                                                          .forEach((element) {
+                                                        // pillsInDatabase.
+                                                        pillsInDatabase[element]
+                                                            ['Qty'] = int.parse(
+                                                                pillsInDatabase[
+                                                                        element]
+                                                                    ['Qty']) -
+                                                            element.quantity;
+                                                      });
+                                                      print(pillsInDatabase);
+                                                      prefs.setString(
+                                                          'PillStockDatabase',
+                                                          jsonEncode(
+                                                              pillsInDatabase));
+                                                    } catch (e) {}
+                                                    updateMedictioonHistory();
+                                                  }
+                                                : null,
+                                            icon: Icon(Icons.check),
+                                            color: Colors.pink[50],
+                                            label: Text("I took My medication"))
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                          ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -399,7 +509,9 @@ class _RemainderHomeState extends State<RemainderHome> {
                       onTap: () async {
                         await Navigator.of(context).push(MaterialPageRoute(
                             builder: (ctx) => MedicineScheduler()));
-                        setState(() {});
+                        setState(() {
+                          ddd();
+                        });
                       },
                       child: Card(
                         color: Colors.pink[50],

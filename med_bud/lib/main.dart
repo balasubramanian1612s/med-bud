@@ -7,6 +7,7 @@ import 'package:med_bud/provider/medicine_shop_provider.dart';
 import 'package:med_bud/provider/scheduler_medicine_provider.dart';
 import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -62,6 +63,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  // deleteData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.clear();
+  // }
+  @override
+  void initState() {
+    // deleteData();
+    super.initState();
   }
 
   @override
