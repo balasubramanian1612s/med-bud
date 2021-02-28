@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
                         context: context,
                         builder: (_) => AlertDialog(
                               title: Text('Error'),
-                              content: Text('There was some error logging in'),
+                              content: Text('There was some error logging'),
                             ));
                   }
                 },
