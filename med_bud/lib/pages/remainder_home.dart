@@ -95,11 +95,6 @@ class _RemainderHomeState extends State<RemainderHome> {
     if (medicationDataOff != null) {
       medicationData = jsonDecode(medicationDataOff) as Map<String, dynamic>;
       print("In if");
-      medicationData[todayString] = {
-        "Morning": "no",
-        "Afternoon": "no",
-        "Evening": "no",
-      };
       medicationData.putIfAbsent(
           todayString,
           () => {
@@ -264,19 +259,24 @@ class _RemainderHomeState extends State<RemainderHome> {
                                                           pillsStockNewData;
                                                       morningMedicines
                                                           .forEach((element) {
-                                                        // pillsInDatabase.
-                                                        pillsInDatabase[element]
-                                                            ['Qty'] = int.parse(
-                                                                pillsInDatabase[
-                                                                        element]
-                                                                    ['Qty']) -
-                                                            element.quantity;
+                                                        pillsInDatabase[
+                                                                element.name][
+                                                            'Qty'] = (int.parse(
+                                                                    pillsInDatabase[
+                                                                            element.name]
+                                                                        [
+                                                                        'Qty']) -
+                                                                element
+                                                                    .quantity)
+                                                            .toString();
                                                       });
                                                       prefs.setString(
                                                           'PillStockDatabase',
                                                           jsonEncode(
                                                               pillsInDatabase));
-                                                    } catch (e) {}
+                                                    } catch (e) {
+                                                      print(e);
+                                                    }
                                                     print(medicationData);
                                                     updateMedictioonHistory();
                                                   }
@@ -356,12 +356,16 @@ class _RemainderHomeState extends State<RemainderHome> {
                                                       afternoonMedicines
                                                           .forEach((element) {
                                                         // pillsInDatabase.
-                                                        pillsInDatabase[element]
-                                                            ['Qty'] = int.parse(
-                                                                pillsInDatabase[
-                                                                        element]
-                                                                    ['Qty']) -
-                                                            element.quantity;
+                                                        pillsInDatabase[
+                                                                element.name][
+                                                            'Qty'] = (int.parse(
+                                                                    pillsInDatabase[
+                                                                            element.name]
+                                                                        [
+                                                                        'Qty']) -
+                                                                element
+                                                                    .quantity)
+                                                            .toString();
                                                       });
                                                       print(pillsInDatabase);
                                                       prefs.setString(
@@ -446,12 +450,16 @@ class _RemainderHomeState extends State<RemainderHome> {
                                                       nightMedicines
                                                           .forEach((element) {
                                                         // pillsInDatabase.
-                                                        pillsInDatabase[element]
-                                                            ['Qty'] = int.parse(
-                                                                pillsInDatabase[
-                                                                        element]
-                                                                    ['Qty']) -
-                                                            element.quantity;
+                                                        pillsInDatabase[
+                                                                element.name][
+                                                            'Qty'] = (int.parse(
+                                                                    pillsInDatabase[
+                                                                            element.name]
+                                                                        [
+                                                                        'Qty']) -
+                                                                element
+                                                                    .quantity)
+                                                            .toString();
                                                       });
                                                       print(pillsInDatabase);
                                                       prefs.setString(
