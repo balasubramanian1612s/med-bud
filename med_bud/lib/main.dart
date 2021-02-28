@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
+import 'package:med_bud/pages/order_page.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/provider/cart_provider.dart';
@@ -53,7 +54,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static List<Widget> _widgetOptions = <Widget>[
     PillStockHome(),
     RemainderHome(),
-    MedicineShopping()
+    MedicineShopping(),
+    OrderPage()
   ];
 
   void _onItemTapped(int index) {
@@ -95,9 +97,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             icon: Icon(Icons.medical_services),
             label: 'Shop',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.verified_user_rounded),
+            label: 'Profile',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
