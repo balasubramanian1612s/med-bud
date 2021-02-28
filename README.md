@@ -23,6 +23,8 @@ Installation steps:
 Requirements:
 Flutter SDK to be installed from https://flutter.dev/docs/get-started/install/windows
 
+Useful Video: https://www.youtube.com/watch?v=lBR1jWW8cMc
+
 To Run:
 
 1. Create a android-device-emulator on Android studio ( installed in step 1)
