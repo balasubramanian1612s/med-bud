@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
+import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/provider/cart_provider.dart';
 import 'package:med_bud/provider/medicine_shop_provider.dart';
@@ -49,10 +50,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
+    PillStockHome(),
     RemainderHome(),
     Text(
       'Index 2: School',

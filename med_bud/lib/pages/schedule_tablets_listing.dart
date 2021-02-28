@@ -108,6 +108,35 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
 
                     prefs.setString(
                         "RoutineDatabase", jsonEncode(dataFromDatabse));
+                    Map<String, int> mainPills = {};
+
+                    dataFromDatabse['Morning'].forEach((key, value) {
+                      bool alreadyExist = mainPills.containsKey(key);
+                      if (alreadyExist) {
+                        mainPills[key] += value['qty'];
+                      } else {
+                        mainPills[key] = value['qty'];
+                      }
+                    });
+                    dataFromDatabse['Afternoon'].forEach((key, value) {
+                      bool alreadyExist = mainPills.containsKey(key);
+                      if (alreadyExist) {
+                        mainPills[key] += value['qty'];
+                      } else {
+                        mainPills[key] = value['qty'];
+                      }
+                    });
+                    dataFromDatabse['Evening'].forEach((key, value) {
+                      bool alreadyExist = mainPills.containsKey(key);
+                      if (alreadyExist) {
+                        mainPills[key] += value['qty'];
+                      } else {
+                        mainPills[key] = value['qty'];
+                      }
+                    });
+                    print(mainPills);
+                    prefs.setString(
+                        'DailyPillCountDatabase', jsonEncode(mainPills));
                   }
                   String loadedData = prefs.getString('RoutineDatabase');
                   print(loadedData);
