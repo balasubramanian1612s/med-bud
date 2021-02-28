@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
-import 'package:med_bud/pages/schedule_tablets_listing.dart';
-import 'package:med_bud/pages/scheduler_medicine_list.dart';
+import 'package:med_bud/provider/cart_provider.dart';
+import 'package:med_bud/provider/medicine_shop_provider.dart';
+import 'package:med_bud/provider/scheduler_medicine_provider.dart';
 import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
 
@@ -15,12 +16,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: MyStatefulWidget(),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SchedulerMedicineProvider>(
+            create: (context) => SchedulerMedicineProvider(),
+          ),
+          ChangeNotifierProvider<MedicineShopProvider>(
+            create: (context) => MedicineShopProvider(),
+          ),
+          ChangeNotifierProvider<CartProvider>(
+            create: (context) => CartProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.pink,
+          ),
+          home: MedicineShopping(),
+        ));
   }
 }
 

@@ -139,7 +139,6 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                         'DailyPillCountDatabase', jsonEncode(mainPills));
                   }
                   String loadedData = prefs.getString('RoutineDatabase');
-                  //do call here for scheduling
                   print(loadedData);
                   Navigator.of(context).pop();
                 })
