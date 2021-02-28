@@ -111,27 +111,27 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                     Map<String, int> mainPills = {};
 
                     dataFromDatabse['Morning'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(value['name']);
+                      bool alreadyExist = mainPills.containsKey(key);
                       if (alreadyExist) {
-                        mainPills[value['name']] += value['qty'];
+                        mainPills[key] += value['qty'];
                       } else {
-                        mainPills[value['name']] = value['qty'];
+                        mainPills[key] = value['qty'];
                       }
                     });
                     dataFromDatabse['Afternoon'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(value['name']);
+                      bool alreadyExist = mainPills.containsKey(key);
                       if (alreadyExist) {
-                        mainPills[value['name']] += value['qty'];
+                        mainPills[key] += value['qty'];
                       } else {
-                        mainPills[value['name']] = value['qty'];
+                        mainPills[key] = value['qty'];
                       }
                     });
                     dataFromDatabse['Evening'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(value['name']);
+                      bool alreadyExist = mainPills.containsKey(key);
                       if (alreadyExist) {
-                        mainPills[value['name']] += value['qty'];
+                        mainPills[key] += value['qty'];
                       } else {
-                        mainPills[value['name']] = value['qty'];
+                        mainPills[key] = value['qty'];
                       }
                     });
                     print(mainPills);
