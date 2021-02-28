@@ -24,9 +24,9 @@ class _PillStockHomeState extends State<PillStockHome> {
 
       if (routineDatas == null) {
       } else {
-        dailyPillCountDatabase =
-            jsonEncode(prefs.getString('DailyPillCountDatabase'))
-                as Map<String, int>;
+        String xxx = prefs.getString('DailyPillCountDatabase');
+        print(xxx);
+        dailyPillCountDatabase = jsonDecode(xxx);
         Map<String, dynamic> routineDatabase =
             jsonDecode(routineDatas) as Map<String, dynamic>;
         routineDatabase.values.forEach((element) {
@@ -83,9 +83,9 @@ class _PillStockHomeState extends State<PillStockHome> {
     );
   }
 
-  bool isLow = false;
   @override
   Widget build(BuildContext context) {
+    bool isLow = false;
     keys.forEach((element) {
       if (int.parse(pillsInDatabase[element]['Qty']) <
           dailyPillCountDatabase[element] * 5) {
@@ -111,9 +111,53 @@ class _PillStockHomeState extends State<PillStockHome> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
+                      isLow
+                          ? Text(
+                              'Your have medicines stock less than 5 days',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Container(),
+                      isLow
+                          ? RaisedButton(
+                              onPressed: () {},
+                              child:
+                                  Text('Buy your routine tablets for a month'),
+                              color: Colors.green,
+                            )
+                          : Container(),
                       Text(
                         'Update your pill stock and expiry date for safety!',
                         style: TextStyle(fontSize: 25),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 5,
+                              backgroundColor: Colors.red[500],
+                            ),
+                            Text('   Stocks are availbe for less than 5 days')
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 5,
+                            backgroundColor: Colors.orange[500],
+                          ),
+                          Text('   Stocks are availbe for less than 10 days')
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 5,
+                            backgroundColor: Colors.green[500],
+                          ),
+                          Text('   No need to worry about the stock')
+                        ],
                       ),
                       Divider(),
                       ListView.builder(
@@ -131,8 +175,8 @@ class _PillStockHomeState extends State<PillStockHome> {
                                                   ['Qty']) <
                                               dailyPillCountDatabase[keys[i]] *
                                                   10
-                                          ? Colors.blue[500]
-                                          : Colors.white,
+                                          ? Colors.orange[500]
+                                          : Colors.green[500],
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
