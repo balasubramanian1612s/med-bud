@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
                 child: Container(
                   width: 200,
                   height: 150,
-                  color: Colors.pink[50],
+                  // color: Colors.pink[50],
                 ),
               ),
             ),
@@ -70,8 +70,8 @@ class _LoginState extends State<Login> {
               height: 40,
               width: 150,
               decoration: BoxDecoration(
-                  color: Colors.pink[300],
-                  borderRadius: BorderRadius.circular(20)),
+                  color: Colors.pink[50],
+                  borderRadius: BorderRadius.circular(10)),
               child: FlatButton(
                 onPressed: () async {
                   bool resp = await provider.login(
@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                 },
                 child: Text(
                   'Login',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
               ),
             ),
