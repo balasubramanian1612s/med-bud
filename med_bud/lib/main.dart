@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/remainder_home.dart';
+import 'package:med_bud/provider/cart_provider.dart';
+import 'package:med_bud/provider/medicine_shop_provider.dart';
+import 'package:med_bud/provider/scheduler_medicine_provider.dart';
+import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -12,7 +16,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [],
+        providers: [
+          ChangeNotifierProvider<SchedulerMedicineProvider>(
+            create: (context) => SchedulerMedicineProvider(),
+          ),
+          ChangeNotifierProvider<MedicineShopProvider>(
+            create: (context) => MedicineShopProvider(),
+          ),
+          ChangeNotifierProvider<CartProvider>(
+            create: (context) => CartProvider(),
+          ),
+        ],
         child: MaterialApp(
           theme: ThemeData(
             primarySwatch: Colors.pink,

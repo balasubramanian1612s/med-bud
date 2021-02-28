@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:med_bud/main.dart';
+import 'package:med_bud/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/MedicineShopping.dart';
 
@@ -87,7 +90,30 @@ class _CartState extends State<Cart> {
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  var provider =
+                      Provider.of<CartProvider>(context, listen: false);
+                  String name = await provider.placeOrder(cart, total);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => AlertDialog(
+                      title: Text("Order placed"),
+                      content: Text(
+                          "Congratulations $name ! Your order was placed successfully"),
+                      actions: [
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => MyStatefulWidget()),
+                                  (_) => false);
+                            },
+                            child: Text('Okay'))
+                      ],
+                    ),
+                  );
+                },
                 color: Colors.pink[100],
                 padding:
                     EdgeInsets.only(top: 12, left: 50, right: 50, bottom: 12),

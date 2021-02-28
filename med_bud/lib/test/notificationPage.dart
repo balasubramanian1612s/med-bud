@@ -37,7 +37,7 @@ class _NotificationPageState extends State<NotificationPage> {
     //     1, 'Task', 'You created', generalNotificationDetails,
     //     payload: "Payload");
     DateTime scheduledTime = DateTime.now()
-        .add(Duration(seconds: 5)); // set the date and time of notification
+        .add(Duration(seconds: 10)); // set the date and time of notification
 
     await flutterLocalNotificationsPlugin.schedule(0, 'Scheduled',
         'Scheduled Dude !1', scheduledTime, generalNotificationDetails,

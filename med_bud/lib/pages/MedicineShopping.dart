@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:med_bud/cart.dart';
+import 'package:med_bud/provider/medicine_shop_provider.dart';
+import 'package:provider/provider.dart';
 
 // ignore: deprecated_member_use
 List<MedicinesInCart> cart = List<MedicinesInCart>();
@@ -14,20 +16,25 @@ class MedicineShopping extends StatefulWidget {
 }
 
 class _MedicineShoppingState extends State<MedicineShopping> {
+  bool isInit = true;
   // List<MedicinesInCart> cart;
-  List<MedicinesInShop> medicines = [
-    MedicinesInShop(medId: 1, medName: 'Medicine 1', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 2, medName: 'Medicine 2', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 3, medName: 'Medicine 3', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 4, medName: "Medicine 4", price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 5, medName: "Medicine 5", price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 6, medName: 'Medicine 6', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 7, medName: 'Medicine 7', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 8, medName: 'Medicine 8', price: 29.99, quantity: 0),
-    MedicinesInShop(medId: 9, medName: 'Medicine 9', price: 29.99, quantity: 0),
-    MedicinesInShop(
-        medId: 10, medName: 'Medicine 10', price: 29.99, quantity: 0),
-  ];
+  List<MedicinesInShop> medicines = [];
+
+  void loadAllData() async {
+    var provider = Provider.of<MedicineShopProvider>(context);
+    await provider.fetchMedicines();
+    medicines = provider.medicines;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isInit) {
+      loadAllData();
+      isInit = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +50,8 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                   medId: medicines[i].medId,
                   medName: medicines[i].medName,
                   quantity: medicines[i].quantity,
-                  price: medicines[i].price));
+                  price: medicines[i].price,
+                  expiryDate: medicines[i].expiryDate));
               total += medicines[i].price * medicines[i].quantity;
               print(medicines[i].medName);
             }
@@ -57,20 +65,22 @@ class _MedicineShoppingState extends State<MedicineShopping> {
       ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade100,
-      body: Builder(
-        builder: (context) {
-          return ListView(
-            children: <Widget>[
-              //createHeader(),
-              createMedicinesList(),
-              SizedBox(
-                height: 20,
-              )
-              // footer(context)
-            ],
-          );
-        },
-      ),
+      body: medicines.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : Builder(
+              builder: (context) {
+                return ListView(
+                  children: <Widget>[
+                    //createHeader(),
+                    createMedicinesList(),
+                    SizedBox(
+                      height: 20,
+                    )
+                    // footer(context)
+                  ],
+                );
+              },
+            ),
     );
   }
 
@@ -307,27 +317,31 @@ class _MedicineShoppingState extends State<MedicineShopping> {
 }
 
 class MedicinesInShop {
-  int medId;
+  String medId;
   int quantity;
   String medName;
   double price;
+  String expiryDate;
   MedicinesInShop(
       {@required this.medId,
       @required this.medName,
       @required this.quantity,
-      @required this.price});
+      @required this.price,
+      this.expiryDate});
 }
 
 class MedicinesInCart {
-  int medId;
+  String medId;
   int quantity;
   String medName;
   double price;
+  String expiryDate;
   MedicinesInCart(
       {@required this.medId,
       @required this.medName,
       @required this.quantity,
-      @required this.price});
+      @required this.price,
+      this.expiryDate});
 }
 
 class MedicinesRemaining {
