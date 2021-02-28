@@ -4,6 +4,7 @@ import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/provider/cart_provider.dart';
 import 'package:med_bud/provider/medicine_shop_provider.dart';
+import 'package:med_bud/provider/pill_stock_provider.dart';
 import 'package:med_bud/provider/scheduler_medicine_provider.dart';
 import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider<CartProvider>(
             create: (context) => CartProvider(),
+          ),
+          ChangeNotifierProvider<PillStockProvider>(
+            create: (context) => PillStockProvider(),
           ),
         ],
         child: MaterialApp(

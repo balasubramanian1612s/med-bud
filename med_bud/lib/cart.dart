@@ -77,7 +77,7 @@ class _CartState extends State<Cart> {
                   Container(
                     margin: EdgeInsets.only(right: 30),
                     child: Text(
-                      total.toStringAsFixed(2),
+                      '₹ ${total.toStringAsFixed(2)}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -172,7 +172,7 @@ class _CartState extends State<Cart> {
                         ),
                       ),
                       Text(
-                        "₹${cart[index].price * cart[index].quantity}",
+                        "₹ ${(cart[index].price * cart[index].quantity).toStringAsFixed(2)}",
                         style: TextStyle(
                             color: Colors.pink,
                             fontSize: 17,
