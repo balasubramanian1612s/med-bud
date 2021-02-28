@@ -24,9 +24,9 @@ class _PillStockHomeState extends State<PillStockHome> {
 
       if (routineDatas == null) {
       } else {
-        String xxx = prefs.getString('DailyPillCountDatabase');
-        print(xxx);
-        dailyPillCountDatabase = jsonDecode(xxx);
+        dailyPillCountDatabase =
+            jsonEncode(prefs.getString('DailyPillCountDatabase'))
+                as Map<String, int>;
         Map<String, dynamic> routineDatabase =
             jsonDecode(routineDatas) as Map<String, dynamic>;
         routineDatabase.values.forEach((element) {
