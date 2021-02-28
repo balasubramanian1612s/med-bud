@@ -193,15 +193,12 @@ class _MedicineShoppingState extends State<MedicineShopping> {
                           softWrap: true,
                         ),
                       ),
-                      Text(
-                        "for headache",
-                      ),
                       Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              medicines[index].price.toString(),
+                              '₹ ${medicines[index].price.toStringAsFixed(2)}',
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
