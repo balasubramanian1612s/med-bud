@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:med_bud/main.dart';
+import 'package:med_bud/provider/login_provider.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -6,8 +9,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<LoginProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -31,6 +38,7 @@ class _LoginState extends State<Login> {
               //padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 0, bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -42,6 +50,7 @@ class _LoginState extends State<Login> {
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -64,9 +73,22 @@ class _LoginState extends State<Login> {
                   color: Colors.pink[300],
                   borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //     context, MaterialPageRoute(builder: (_) => HomePage()));
+                onPressed: () async {
+                  bool resp = await provider.login(
+                      emailController.text, passwordController.text);
+                  if (resp == true) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => MyStatefulWidget()),
+                        (_) => false);
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: Text('Error'),
+                              content: Text('There was some error logging in'),
+                            ));
+                  }
                 },
                 child: Text(
                   'Login',
