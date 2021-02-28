@@ -35,8 +35,8 @@ class _PillStockHomeState extends State<PillStockHome> {
             ..addAll(routineDatabase['Afternoon'])
             ..addAll(routineDatabase['Evening']);
           print(thirdMap);
-          element.keys.forEach((e) {
-            dataPills.add(e);
+          element.values.forEach((e) {
+            dataPills.add(e['name']);
           });
         });
         var allPills = dataPills.toSet().toList();

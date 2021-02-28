@@ -111,32 +111,58 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                     Map<String, int> mainPills = {};
 
                     dataFromDatabse['Morning'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(key);
+                      bool alreadyExist = mainPills.containsKey(value['name']);
                       if (alreadyExist) {
-                        mainPills[key] += value['qty'];
+                        mainPills[value['name']] += value['qty'];
                       } else {
-                        mainPills[key] = value['qty'];
+                        mainPills[value['name']] = value['qty'];
                       }
                     });
                     dataFromDatabse['Afternoon'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(key);
+                      bool alreadyExist = mainPills.containsKey(value['name']);
                       if (alreadyExist) {
-                        mainPills[key] += value['qty'];
+                        mainPills[value['name']] += value['qty'];
                       } else {
-                        mainPills[key] = value['qty'];
+                        mainPills[value['name']] = value['qty'];
                       }
                     });
                     dataFromDatabse['Evening'].forEach((key, value) {
-                      bool alreadyExist = mainPills.containsKey(key);
+                      bool alreadyExist = mainPills.containsKey(value['name']);
                       if (alreadyExist) {
-                        mainPills[key] += value['qty'];
+                        mainPills[value['name']] += value['qty'];
                       } else {
-                        mainPills[key] = value['qty'];
+                        mainPills[value['name']] = value['qty'];
                       }
                     });
                     print(mainPills);
                     prefs.setString(
                         'DailyPillCountDatabase', jsonEncode(mainPills));
+
+                    //new
+                    List<String> dataPills = [];
+                    Map<String, dynamic> pillsInDatabase;
+                    String routineDatas = prefs.getString('RoutineDatabase');
+                    Map<String, dynamic> routineDatabase =
+                        jsonDecode(routineDatas) as Map<String, dynamic>;
+                    routineDatabase.values.forEach((element) {
+                      var thirdMap = {}
+                        ..addAll(routineDatabase['Morning'])
+                        ..addAll(routineDatabase['Afternoon'])
+                        ..addAll(routineDatabase['Evening']);
+                      print(thirdMap);
+                      element.values.forEach((e) {
+                        dataPills.add(e['name']);
+                      });
+                    });
+                    var allPills = dataPills.toSet().toList();
+                    Map<String, dynamic> pillsStockNewData = {};
+                    allPills.forEach((element) {
+                      pillsStockNewData.putIfAbsent(
+                          element, () => {'expiryDate': '-', 'Qty': '0'});
+                    });
+                    prefs.setString(
+                        'PillStockDatabase', jsonEncode(pillsStockNewData));
+                    pillsInDatabase = pillsStockNewData;
                   }
                   String loadedData = prefs.getString('RoutineDatabase');
                   print(loadedData);
