@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:med_bud/pages/order_page.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/provider/login_provider.dart';
@@ -49,7 +48,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static List<Widget> _widgetOptions = <Widget>[
     PillStockHome(),
     RemainderHome(),
-    OrderPage()
   ];
 
   void _onItemTapped(int index) {
@@ -86,10 +84,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today_rounded),
             label: 'Remainder',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.verified_user_rounded),
-            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
