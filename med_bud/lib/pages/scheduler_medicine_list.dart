@@ -1,8 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:med_bud/provider/scheduler_medicine_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Medicine {
@@ -20,9 +17,7 @@ class SchedulerMedicineList extends StatefulWidget {
 
 class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
   Widget appBarTitle = new Text("Med Bud");
-  Icon actionIcon = new Icon(Icons.search);
   TextEditingController controller = new TextEditingController();
-  List<Medicine> searchedMedicines = [];
   List<String> selectedIds = [];
   List<Medicine> allMedicines = [];
   var provider;
@@ -30,12 +25,16 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
 
   List<Medicine> selectedMedicinnes = [];
   loadAllData() async {
-    var provider = Provider.of<SchedulerMedicineProvider>(context);
-    await provider.fetchMedicines();
-    allMedicines = provider.allMedicines;
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.clear();
+
+    String allMedicinesDatabase = prefs.getString('AllMedicinesDatabase');
+
+    if (allMedicinesDatabase != null) {
+      allMedicines = jsonDecode(allMedicinesDatabase);
+    } else {
+      allMedicines = [];
+    }
+
     String hasData = prefs.getString('RoutineDatabase');
     print(hasData);
     List<Medicine> tabletsIntheSheduler = [];
@@ -94,42 +93,12 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    controller.addListener(() {
-      searchedMedicines = [];
-      setState(() {
-        allMedicines.forEach((element) {
-          if (element.name.toLowerCase().contains(controller.text)) {
-            searchedMedicines.add(element);
-          }
-        });
-      });
-    });
     return Scaffold(
       appBar:
           new AppBar(centerTitle: true, title: appBarTitle, actions: <Widget>[
         new IconButton(
-          icon: actionIcon,
-          onPressed: () {
-            setState(() {
-              if (this.actionIcon.icon == Icons.search) {
-                this.actionIcon = new Icon(Icons.close);
-                this.appBarTitle = new TextField(
-                  controller: controller,
-                  style: new TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: new InputDecoration(
-                      prefixIcon: new Icon(Icons.search, color: Colors.white),
-                      hintText: "Search...",
-                      hintStyle: new TextStyle(color: Colors.white)),
-                );
-              } else {
-                controller = new TextEditingController();
-                this.actionIcon = new Icon(Icons.search);
-                this.appBarTitle = new Text("AppBar Title");
-              }
-            });
-          },
+          icon: Icon(Icons.add),
+          onPressed: () {},
         ),
       ]),
       floatingActionButton: FloatingActionButton(
@@ -146,9 +115,7 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
       body: allMedicines.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: controller.text == ""
-                  ? allMedicines.length
-                  : searchedMedicines.length,
+              itemCount: allMedicines.length,
               itemBuilder: (context, index) {
                 return Card(
                     elevation: 10,
@@ -167,19 +134,14 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  controller.text == ""
-                                      ? allMedicines[index].name
-                                      : searchedMedicines[index].name,
+                                  allMedicines[index].name,
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 Expanded(child: Container()),
                                 ClipOval(
                                   child: Material(
-                                    color: selectedIds.contains(
-                                            controller.text == ""
-                                                ? allMedicines[index].medId
-                                                : searchedMedicines[index]
-                                                    .medId)
+                                    color: selectedIds
+                                            .contains(allMedicines[index].medId)
                                         ? Colors.pink[200]
                                         : Colors.grey[200], // button color
                                     child: InkWell(
@@ -190,21 +152,12 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
                                       onTap: () {
                                         setState(() {
                                           if (selectedIds.contains(
-                                              controller.text == ""
-                                                  ? allMedicines[index].medId
-                                                  : searchedMedicines[index]
-                                                      .medId)) {
+                                              allMedicines[index].medId)) {
                                             selectedIds.remove(
-                                                controller.text == ""
-                                                    ? allMedicines[index].medId
-                                                    : searchedMedicines[index]
-                                                        .medId);
+                                                allMedicines[index].medId);
                                           } else {
-                                            selectedIds.add(
-                                                controller.text == ""
-                                                    ? allMedicines[index].medId
-                                                    : searchedMedicines[index]
-                                                        .medId);
+                                            selectedIds
+                                                .add(allMedicines[index].medId);
                                           }
                                           // mediNames[index].quantity += 1;
                                         });

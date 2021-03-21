@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:med_bud/login.dart';
 import 'package:med_bud/pages/order_page.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
 import 'package:med_bud/provider/login_provider.dart';
 import 'package:med_bud/provider/pill_stock_provider.dart';
-import 'package:med_bud/provider/scheduler_medicine_provider.dart';
 import 'package:med_bud/test/notificationPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,9 +18,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<SchedulerMedicineProvider>(
-            create: (context) => SchedulerMedicineProvider(),
-          ),
           ChangeNotifierProvider<PillStockProvider>(
             create: (context) => PillStockProvider(),
           ),
