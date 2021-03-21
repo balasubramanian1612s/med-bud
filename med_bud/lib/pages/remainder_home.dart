@@ -139,39 +139,7 @@ class _RemainderHomeState extends State<RemainderHome> {
   void initState() {
     isLoading = true;
     ddd();
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings();
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: notificationSelected);
-    _showNotification();
     super.initState();
-  }
-
-  Future _showNotification() async {
-    var androidDetails = AndroidNotificationDetails(
-        'channelId', 'reminderChannel', 'Send Reminders',
-        importance: Importance.max, priority: Priority.max);
-    var iosDetails = IOSNotificationDetails();
-    var generalNotificationDetails =
-        NotificationDetails(android: androidDetails, iOS: iosDetails);
-    // await flutterLocalNotificationsPlugin.show(
-    //     1, 'Task', 'You created', generalNotificationDetails,
-    //     payload: "Payload");
-    DateTime scheduledTime = DateTime.now()
-        .add(Duration(seconds: 10)); // set the date and time of notification
-
-    await flutterLocalNotificationsPlugin.schedule(0, 'Scheduled',
-        'Scheduled Dude !1', scheduledTime, generalNotificationDetails,
-        payload: 'Payload Info');
-    //payload-the info you wanna pass at time of creating notification that should be recieved at time of notification
   }
 
   @override

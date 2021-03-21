@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:med_bud/login.dart';
-import 'package:med_bud/pages/MedicineShopping.dart';
 import 'package:med_bud/pages/order_page.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
-import 'package:med_bud/provider/cart_provider.dart';
 import 'package:med_bud/provider/login_provider.dart';
-import 'package:med_bud/provider/medicine_shop_provider.dart';
 import 'package:med_bud/provider/pill_stock_provider.dart';
 import 'package:med_bud/provider/scheduler_medicine_provider.dart';
 import 'package:med_bud/test/notificationPage.dart';
@@ -26,12 +23,6 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<SchedulerMedicineProvider>(
             create: (context) => SchedulerMedicineProvider(),
           ),
-          ChangeNotifierProvider<MedicineShopProvider>(
-            create: (context) => MedicineShopProvider(),
-          ),
-          ChangeNotifierProvider<CartProvider>(
-            create: (context) => CartProvider(),
-          ),
           ChangeNotifierProvider<PillStockProvider>(
             create: (context) => PillStockProvider(),
           ),
@@ -43,7 +34,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.pink,
           ),
-          home: Login(),
+          home: MyStatefulWidget(),
         ));
   }
 }
@@ -63,7 +54,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static List<Widget> _widgetOptions = <Widget>[
     PillStockHome(),
     RemainderHome(),
-    MedicineShopping(),
     OrderPage()
   ];
 
@@ -101,10 +91,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today_rounded),
             label: 'Remainder',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services),
-            label: 'Shop',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.verified_user_rounded),

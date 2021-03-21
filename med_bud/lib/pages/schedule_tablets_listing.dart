@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-import 'package:med_bud/cart.dart';
-
 import 'package:med_bud/pages/scheduler_medicine_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
