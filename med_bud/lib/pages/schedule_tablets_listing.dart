@@ -138,7 +138,6 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
 
                     //new
                     List<String> dataPills = [];
-                    Map<String, dynamic> pillsInDatabase;
                     String routineDatas = prefs.getString('RoutineDatabase');
                     Map<String, dynamic> routineDatabase =
                         jsonDecode(routineDatas) as Map<String, dynamic>;
@@ -152,15 +151,15 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                         dataPills.add(e['name']);
                       });
                     });
-                    var allPills = dataPills.toSet().toList();
-                    Map<String, dynamic> pillsStockNewData = {};
-                    allPills.forEach((element) {
-                      pillsStockNewData.putIfAbsent(
-                          element, () => {'expiryDate': '-', 'Qty': '0'});
-                    });
-                    prefs.setString(
-                        'PillStockDatabase', jsonEncode(pillsStockNewData));
-                    pillsInDatabase = pillsStockNewData;
+                    // var allPills = dataPills.toSet().toList();
+                    // Map<String, dynamic> pillsStockNewData = {};
+                    // allPills.forEach((element) {
+                    //   pillsStockNewData.putIfAbsent(
+                    //       element, () => {'expiryDate': '-', 'Qty': '0'});
+                    // });
+                    // prefs.setString(
+                    //     'PillStockDatabase', jsonEncode(pillsStockNewData));
+                    // pillsInDatabase = pillsStockNewData;
                   }
                   String loadedData = prefs.getString('RoutineDatabase');
                   print(loadedData);
@@ -168,20 +167,21 @@ class _ScheduleTabletsListingState extends State<ScheduleTabletsListing> {
                 })
           ],
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () async {
-          selectedMedicines = await Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (ctx) => SchedulerMedicineList(widget.when)));
-          if (selectedMedicines != null) {
-            setState(() {
-              selectedMedicines.forEach((element) {
-                mediNames.add(
-                    new MedicineRoutine(element.medId, element.name, 1, 0));
-              });
-            });
-          }
-
-        }),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () async {
+              selectedMedicines = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (ctx) => SchedulerMedicineList(widget.when)));
+              if (selectedMedicines != null) {
+                setState(() {
+                  selectedMedicines.forEach((element) {
+                    mediNames.add(
+                        new MedicineRoutine(element.medId, element.name, 1, 0));
+                  });
+                });
+              }
+            }),
 
         // child: Icon(Icons.add),
         // ),

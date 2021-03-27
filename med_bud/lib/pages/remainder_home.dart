@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:med_bud/pages/medicine_scheduler.dart';
+import 'package:med_bud/pages/my_medicines.dart';
 import 'package:med_bud/pages/schedule_tablets_listing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,8 +14,6 @@ class RemainderHome extends StatefulWidget {
 }
 
 class _RemainderHomeState extends State<RemainderHome> {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
   bool isLoading;
   List<MedicineRoutine> morningMedicines = [];
   List<MedicineRoutine> nightMedicines = [];
@@ -192,11 +190,17 @@ class _RemainderHomeState extends State<RemainderHome> {
                                           'Took you Morning medication?',
                                           style: TextStyle(fontSize: 20),
                                         ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         Center(
                                             child: Text(
                                           morningText,
                                           textAlign: TextAlign.center,
                                         )),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         RaisedButton.icon(
                                             onPressed: hour >= 6
                                                 ? () async {
@@ -286,11 +290,17 @@ class _RemainderHomeState extends State<RemainderHome> {
                                           'Took you Afternoon medication?',
                                           style: TextStyle(fontSize: 20),
                                         ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         Center(
                                             child: Text(
                                           afternoonText,
                                           textAlign: TextAlign.center,
                                         )),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         RaisedButton.icon(
                                             onPressed: hour >= 2
                                                 ? () async {
@@ -381,11 +391,17 @@ class _RemainderHomeState extends State<RemainderHome> {
                                           'Took you Night medication?',
                                           style: TextStyle(fontSize: 20),
                                         ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         Center(
                                             child: Text(
                                           eveningText,
                                           textAlign: TextAlign.center,
                                         )),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         RaisedButton.icon(
                                             onPressed: hour >= 1
                                                 ? () async {
@@ -516,6 +532,43 @@ class _RemainderHomeState extends State<RemainderHome> {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx) => MyMedicines()));
+                    setState(() {
+                      ddd();
+                    });
+                  },
+                  child: Card(
+                    color: Colors.pink[50],
+                    elevation: 5,
+                    child: Container(
+                      width: width * 0.45,
+                      height: height * 0.12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.pink,
+                              size: 40,
+                            ),
+                            Center(
+                                child: Text(
+                              'Manage all your medicines',
+                              textAlign: TextAlign.center,
+                            ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

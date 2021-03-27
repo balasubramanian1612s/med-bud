@@ -1,22 +1,16 @@
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:med_bud/pages/scheduler_medicine_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Medicine {
-  String name;
-  String medId;
-  Medicine(@required this.medId, @required this.name);
-}
-
-class SchedulerMedicineList extends StatefulWidget {
-  int when;
-  SchedulerMedicineList(this.when);
+class MyMedicines extends StatefulWidget {
   @override
-  _SchedulerMedicineListState createState() => _SchedulerMedicineListState();
+  _MyMedicinesState createState() => _MyMedicinesState();
 }
 
-class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
+class _MyMedicinesState extends State<MyMedicines> {
   Widget appBarTitle = new Text("Med Bud");
   List<String> selectedIds = [];
   List<Medicine> allMedicines = [];
@@ -51,46 +45,6 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
     } else {
       allMedicines = [];
       setState(() {});
-    }
-
-    String hasData = prefs.getString('RoutineDatabase');
-    print(hasData);
-    List<Medicine> tabletsIntheSheduler = [];
-    if (hasData != null) {
-      Map<String, dynamic> user = jsonDecode(hasData) as Map<String, dynamic>;
-      user.forEach((key, value) {
-        if (key == "Morning" && widget.when == 0) {
-          value.forEach((k, v) {
-            tabletsIntheSheduler.add(Medicine(k, v["name"]));
-          });
-        } else if (key == "Afternoon" && widget.when == 1) {
-          value.forEach((k, v) {
-            tabletsIntheSheduler.add(Medicine(k, v["name"]));
-          });
-        } else if (key == "Evening" && widget.when == 2) {
-          value.forEach((k, v) {
-            tabletsIntheSheduler.add(Medicine(k, v["name"]));
-          });
-        }
-      });
-      List<String> tempIds = [];
-      tabletsIntheSheduler.forEach((element) {
-        tempIds.add(element.medId);
-      });
-      print(tempIds);
-      List<Medicine> tempMedicines = [];
-      allMedicines.forEach((element) {
-        print(element.medId);
-        if (tempIds.contains(element.medId)) {
-          print("in if");
-        } else {
-          tempMedicines.add(element);
-        }
-      });
-      print(tempMedicines);
-      setState(() {
-        allMedicines = tempMedicines;
-      });
     }
   }
 
@@ -203,17 +157,6 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
           },
         ),
       ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          allMedicines.forEach((element) {
-            if (selectedIds.contains(element.medId)) {
-              selectedMedicinnes.add(element);
-            }
-          });
-          Navigator.of(context).pop(selectedMedicinnes);
-        },
-        child: Icon(Icons.check),
-      ),
       body: allMedicines.isEmpty
           ? Center(
               child: Text(
@@ -257,36 +200,6 @@ class _SchedulerMedicineListState extends State<SchedulerMedicineList> {
                                         showDeleteAlertDialog(
                                             context, allMedicines[index]);
                                       },
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ClipOval(
-                                    child: Material(
-                                      color: selectedIds.contains(
-                                              allMedicines[index].medId)
-                                          ? Colors.pink[200]
-                                          : Colors.grey[400], // button color
-                                      child: InkWell(
-                                        child: SizedBox(
-                                            width: 30,
-                                            height: 30,
-                                            child: Icon(Icons.check)),
-                                        onTap: () {
-                                          setState(() {
-                                            if (selectedIds.contains(
-                                                allMedicines[index].medId)) {
-                                              selectedIds.remove(
-                                                  allMedicines[index].medId);
-                                            } else {
-                                              selectedIds.add(
-                                                  allMedicines[index].medId);
-                                            }
-                                            // mediNames[index].quantity += 1;
-                                          });
-                                        },
-                                      ),
                                     ),
                                   ),
                                 ),

@@ -2,10 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:med_bud/main.dart';
-import 'package:med_bud/provider/pill_stock_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class MedicineStock {
+  final String name;
+  final DateTime expiryDate;
+  final int quantity;
+  MedicineStock(
+      @required this.name, @required this.expiryDate, @required this.quantity);
+}
 
 class PillStockHome extends StatefulWidget {
   @override
@@ -28,6 +33,7 @@ class _PillStockHomeState extends State<PillStockHome> {
 
       if (routineDatas == null) {
       } else {
+        print(dailyPillCountDatabase);
         dailyPillCountDatabase =
             jsonEncode(prefs.getString('DailyPillCountDatabase'))
                 as Map<String, int>;
@@ -56,6 +62,7 @@ class _PillStockHomeState extends State<PillStockHome> {
 
       setState(() {});
     } else {
+      print(pillsDatas);
       String xxx = prefs.getString('DailyPillCountDatabase');
       print(xxx);
       dailyPillCountDatabase = jsonDecode(xxx);
@@ -89,7 +96,6 @@ class _PillStockHomeState extends State<PillStockHome> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<PillStockProvider>(context);
     bool isLow = false;
     keys.forEach((element) {
       if (int.parse(pillsInDatabase[element]['Qty']) <
@@ -107,162 +113,142 @@ class _PillStockHomeState extends State<PillStockHome> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: keys.isEmpty
-                    ? Center(
-                        child: Text(
-                          'Add your daily medications and come up to update pill stock and expiry date!',
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            isLow
-                                ? Text(
-                                    'Your have medicines stock less than 5 days',
-                                    style: TextStyle(color: Colors.red),
-                                  )
-                                : Container(),
-                            isLow
-                                ? RaisedButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      await provider
-                                          .placeOrder(dailyPillCountDatabase);
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      showDialog(
-                                          barrierDismissible: false,
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                title: Text('Ordered'),
-                                                content: Text(
-                                                    'Your order was successfully placed !'),
-                                                actions: [
-                                                  FlatButton(
-                                                    child: Text('Okay'),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                  )
-                                                ],
-                                              ));
-                                    },
-                                    child: Text(
-                                        'Buy your routine tablets for a month'),
-                                    color: Colors.green,
-                                  )
-                                : Container(),
-                            Text(
-                              'Update your pill stock and expiry date for safety!',
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Row(
+          : SingleChildScrollView(
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: keys.isEmpty
+                      ? Center(
+                          child: Text(
+                            'Add your daily medications and come up to update pill stock and expiry date!',
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              isLow
+                                  ? Text(
+                                      'Your have medicines stock less than 5 days',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  : Container(),
+                              Text(
+                                'Update your pill stock and expiry date for safety!',
+                                style: TextStyle(fontSize: 25),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 5,
+                                      backgroundColor: Colors.red[500],
+                                    ),
+                                    Text(
+                                        '   Stocks are availbe for less than 5 days')
+                                  ],
+                                ),
+                              ),
+                              Row(
                                 children: [
                                   CircleAvatar(
                                     radius: 5,
-                                    backgroundColor: Colors.red[500],
+                                    backgroundColor: Colors.orange[500],
                                   ),
                                   Text(
-                                      '   Stocks are availbe for less than 5 days')
+                                      '   Stocks are availbe for less than 10 days')
                                 ],
                               ),
-                            ),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 5,
-                                  backgroundColor: Colors.orange[500],
-                                ),
-                                Text(
-                                    '   Stocks are availbe for less than 10 days')
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 5,
-                                  backgroundColor: Colors.green[500],
-                                ),
-                                Text('   No need to worry about the stock')
-                              ],
-                            ),
-                            Divider(),
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (context, i) {
-                                return Container(
-                                  child: Card(
-                                    color: pillsInDatabase[keys[i]]['Qty'] ==
-                                            '-'
-                                        ? Colors.white
-                                        : int.parse(pillsInDatabase[keys[i]]
-                                                    ['Qty']) <
-                                                dailyPillCountDatabase[
-                                                        keys[i]] *
-                                                    5
-                                            ? Colors.red[500]
-                                            : int.parse(pillsInDatabase[keys[i]]
-                                                        ['Qty']) <
-                                                    dailyPillCountDatabase[
-                                                            keys[i]] *
-                                                        10
-                                                ? Colors.orange[500]
-                                                : Colors.green[500],
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                keys[i],
-                                                style: TextStyle(fontSize: 20),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 5,
+                                    backgroundColor: Colors.green[500],
+                                  ),
+                                  Text('   No need to worry about the stock')
+                                ],
+                              ),
+                              Divider(),
+                              ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, i) {
+                                  return Container(
+                                    child: Card(
+                                      elevation: 10,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              color: pillsInDatabase[keys[i]]
+                                                          ['Qty'] ==
+                                                      '-'
+                                                  ? Colors.white
+                                                  : int.parse(pillsInDatabase[keys[i]]
+                                                              ['Qty']) <
+                                                          dailyPillCountDatabase[
+                                                                  keys[i]] *
+                                                              5
+                                                      ? Colors.red[500]
+                                                      : int.parse(pillsInDatabase[
+                                                                      keys[i]]
+                                                                  ['Qty']) <
+                                                              dailyPillCountDatabase[
+                                                                      keys[i]] *
+                                                                  10
+                                                          ? Colors.orange[500]
+                                                          : Colors.green[500],
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      keys[i],
+                                                      style: TextStyle(
+                                                          fontSize: 20),
+                                                    ),
+                                                    IconButton(
+                                                        icon: Icon(
+                                                          Icons.edit,
+                                                          size: 20,
+                                                        ),
+                                                        onPressed: () async {
+                                                          await _showMyDialog(
+                                                              pillsInDatabase,
+                                                              keys[i]);
+                                                          setState(() {});
+                                                        })
+                                                  ],
+                                                ),
                                               ),
-                                              IconButton(
-                                                  icon: Icon(
-                                                    Icons.edit,
-                                                    size: 20,
-                                                  ),
-                                                  onPressed: () async {
-                                                    await _showMyDialog(
-                                                        pillsInDatabase,
-                                                        keys[i]);
-                                                    setState(() {});
-                                                  })
-                                            ],
-                                          ),
-                                          Divider(),
-                                          Text(
-                                              'Expiry Date: ${pillsInDatabase[keys[i]]['expiryDate']}'),
-                                          Text(
-                                              'Quantity: ${pillsInDatabase[keys[i]]['Qty']}'),
-                                        ],
+                                            ),
+                                            Divider(),
+                                            Text(
+                                                'Expiry Date: ${pillsInDatabase[keys[i]]['expiryDate']}'),
+                                            Text(
+                                                'Quantity: ${pillsInDatabase[keys[i]]['Qty']}'),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                              itemCount: keys.length,
-                            )
-                          ],
+                                  );
+                                },
+                                itemCount: keys.length,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                ),
               ),
             ),
     );

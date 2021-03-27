@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "261256059452",
+    "project_id": "med-bud",
+    "storage_bucket": "med-bud.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261256059452:android:1005866f2faf795e544139",
+        "android_client_info": {
+          "package_name": "com.example.med_bud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261256059452-h4c28pnvfejeq187ipm48l109rt0tove.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVwkjUfQI1u4MZNLJHPMR6G6FdfYyTVd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "261256059452-h4c28pnvfejeq187ipm48l109rt0tove.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:med_bud/pages/pill_stock_home.dart';
 import 'package:med_bud/pages/remainder_home.dart';
-import 'package:med_bud/provider/login_provider.dart';
-import 'package:med_bud/provider/pill_stock_provider.dart';
-import 'package:med_bud/test/notificationPage.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   runApp(MyApp());
 }
 
@@ -15,21 +13,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<PillStockProvider>(
-            create: (context) => PillStockProvider(),
-          ),
-          ChangeNotifierProvider<LoginProvider>(
-            create: (context) => LoginProvider(),
-          ),
-        ],
-        child: MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.pink,
-          ),
-          home: MyStatefulWidget(),
-        ));
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+      ),
+      home: MyStatefulWidget(),
+    );
   }
 }
 
@@ -42,6 +31,37 @@ class MyStatefulWidget extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  final AdSize adSize = AdSize(height: 50, width: 300);
+
+  final AdListener listener = AdListener(
+    // Called when an ad is successfully received.
+    onAdLoaded: (Ad ad) => print('Ad loaded.'),
+    // Called when an ad request failed.
+    onAdFailedToLoad: (Ad ad, LoadAdError error) {
+      ad.dispose();
+      print('Ad failed to load: $error');
+    },
+    // Called when an ad opens an overlay that covers the screen.
+    onAdOpened: (Ad ad) => print('Ad opened.'),
+    // Called when an ad removes an overlay that covers the screen.
+    onAdClosed: (Ad ad) => print('Ad closed.'),
+    // Called when an ad is in the process of leaving the application.
+    onApplicationExit: (Ad ad) => print('Left application.'),
+  );
+  final BannerAd myBanner = BannerAd(
+    adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+    size: AdSize.banner,
+    request: AdRequest(),
+    listener: AdListener(),
+  );
+
+  @override
+  void initState() {
+    myBanner.load();
+
+    super.initState();
+  }
+
   int _selectedIndex = 1;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -56,24 +76,49 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     });
   }
 
-  // deleteData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.clear();
-  // }
   @override
-  void initState() {
-    // deleteData();
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Med Bud'),
-      // ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body:
+          //  ListView.builder(
+          //     itemCount: 4,
+          //     itemBuilder: (c, i) {
+          // ads['myBanner$i'] = BannerAd(
+          //     adUnitId: 'ca-app-pub-7806241675155731/9635136034',
+          //     size: AdSize.banner,
+          //     request: AdRequest(),
+          //     listener: listener);
+          // ads['myBanner$i'].load();
+          //       return Container(
+          //         alignment: Alignment.center,
+          //         child: AdWidget(ad: ads['myBanner$i']),
+          //         width: 300,
+          //         height: 50,
+          //       );
+          //     }),
+          Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(child: _widgetOptions.elementAt(_selectedIndex)),
+          Container(
+            alignment: Alignment.center,
+            child: adWidget,
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
